@@ -1,50 +1,74 @@
-import { getPostsSepSeries } from "@/api/posts";
-import dynamic from "next/dynamic";
-import Link from "next/link";
+"use client";
 
-// 정적 경로 생성
-export async function generateStaticParams() {
-  return [{ lang: "ja" }, { lang: "ko" }];
-}
+import React, { useEffect, useState } from "react";
+import { useRouter, useParams, usePathname } from "next/navigation";
+import PostModal from "../components/PostModal";
 
-// 클라이언트 컴포넌트를 동적으로 가져오기
-const ClientSideFeatures = dynamic(() => import("./ClientSideFeatures"));
+export default function PostsPage() {
+  const [posts, setPosts] = useState<any[]>([]);
+  const router = useRouter();
+  const { lang } = useParams();
+  const pathname = usePathname();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalSeriesId, setModalSeriesId] = useState<string | null>(null);
+  const [modalPostId, setModalPostId] = useState<string | null>(null);
 
-// 글 목록 페이지
-export default async function BlogList({ params }: { params: { lang: string } }) {
-  const lang = params?.lang;
+  useEffect(() => {
+    // 서버에서 글 목록 가져오기
+    const fetchPosts = async () => {
+      const data = await fetch(`/api/${lang}/posts`).then((res) => res.json());
+      setPosts(data);
+      console.log(data);
+    };
 
-  const posts: iPosts[] = await getPostsSepSeries(lang);
+    fetchPosts();
+  }, [lang]);
+
+  useEffect(() => {
+    // URL에 따라 모달 상태 설정
+    const match = pathname.match(/\/posts\/([^/]+)\/([^/]+)/); // 정규식 수정
+    if (match) {
+      setIsModalOpen(true);
+      setModalSeriesId(match[1]);
+      setModalPostId(match[2]);
+      console.log("match true");
+      console.log(`${match[1]}/${match[2]}`);
+    } else {
+      setIsModalOpen(false);
+      setModalSeriesId(null);
+      setModalPostId(null);
+      console.log("match false");
+    }
+  }, [pathname]);
+
+  const openModal = (postId: string) => {
+    window.history.pushState({}, "", `/${lang}/posts/${postId}`); // URL 변경
+    setIsModalOpen(true);
+    setModalSeriesId(postId);
+  };
+
+  const closeModal = () => {
+    window.history.pushState({}, "", `/${lang}`); // URL 변경
+    setIsModalOpen(false);
+    setModalSeriesId(null);
+  };
 
   return (
     <div>
       <h1>글 목록 ({lang})</h1>
       <ul>
-        {posts.map((seriesData: any) => (
-          <li key={seriesData.series}>
-            <h2>{seriesData.series}</h2>
-            <ul>
-              {seriesData.posts.map((post: any, index: number) => (
-                <li key={index}>
-                  <Link href={`/${lang}/posts/${post.path}`}>
-                    <h3>title: {post.data.title}</h3>
-                  </Link>
-                  <p>description: {post.data.description}</p>
-                  {/* Date 객체를 문자열로 변환 */}
-                  <small>date: {new Date(post.data.date).toLocaleDateString()}</small>
-                  <pre>content: {JSON.stringify(post.content.trim(), null, 2)}</pre>
-                  <p>tags:</p>
-                  {post.data.tags.map((tag: string) => (
-                    <p>{tag}</p>
-                  ))}
-                  <p>path: {post.path}</p>
-                  <ClientSideFeatures lang={lang} postId={post.path} />
-                </li>
-              ))}
-            </ul>
-          </li>
-        ))}
+        {posts.map((series) =>
+          series.posts.map((post: iPost) => (
+            <li key={post.path}>
+              <button onClick={() => openModal(post.path)}>{post.data.title}</button>
+            </li>
+          ))
+        )}
       </ul>
+
+      {isModalOpen && modalSeriesId && modalPostId && (
+        <PostModal seriesId={modalSeriesId} postId={modalPostId} closeModal={closeModal} />
+      )}
     </div>
   );
 }

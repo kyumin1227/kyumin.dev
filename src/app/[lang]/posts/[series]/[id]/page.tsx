@@ -1,24 +1,33 @@
-"use client";
+import matter from "gray-matter";
 
-import Modal from "@/app/components/Modal";
-import { useRouter } from "next/navigation";
+async function getPost(lang: string, id: string) {
+  const response = await fetch(`${process.env.GITHUB_API_URL}/${lang}/${id}.mdx`, {
+    headers: {
+      Authorization: `token ${process.env.GITHUB_API_TOKEN}`,
+    },
+  });
 
-export default function PostDetails({ params }: { params: { lang: string; series: string; id: string } }) {
-  console.log("Params:", params);
+  if (!response.ok) return null;
 
-  const router = useRouter();
-  const { lang, series, id } = params;
+  const encodedContent = await response.json();
+  const content = Buffer.from(encodedContent.content, "base64").toString("utf-8");
+  const post = matter(content);
 
-  const closeModal = () => {
-    router.push(`/${lang}`); // 이전 경로로 복귀
-  };
+  return post;
+}
+
+export default async function PostPage({ params }: { params: { lang: string; id: string } }) {
+  const { lang, id } = params;
+  const post = await getPost(lang, id);
+
+  if (!post) {
+    return <div>게시물이 존재하지 않습니다.</div>;
+  }
 
   return (
-    <Modal isOpen={true} onClose={closeModal}>
-      <h2>Post Details</h2>
-      <p>Lang: {lang}</p>
-      <p>Series: {series}</p>
-      <p>ID: {id}</p>
-    </Modal>
+    <div>
+      <h1>{post.data.title}</h1>
+      <article>{post.content}</article>
+    </div>
   );
 }
