@@ -1,5 +1,5 @@
+import { Box, Button } from "@mui/material";
 import matter from "gray-matter";
-import { useTheme } from "next-themes";
 
 async function getPost(lang: string, id: string) {
   const response = await fetch(`${process.env.GITHUB_API_URL}/${lang}/${id}.mdx`, {
@@ -20,14 +20,19 @@ async function getPost(lang: string, id: string) {
 export default async function PostPage({ params }: { params: { lang: string; id: string } }) {
   const { lang, id } = params;
   const post = await getPost(lang, id);
-  const { theme } = useTheme();
 
   if (!post) {
-    return <div>게시물이 존재하지 않습니다.</div>;
+    return (
+      <>
+        <Button color="secondary">fdas</Button>
+        <div>게시물이 존재하지 않습니다.</div>
+      </>
+    );
   }
 
   return (
     <div>
+      <Button>fdas</Button>
       <h1>{post.data.title}</h1>
       <article>{post.content}</article>
     </div>

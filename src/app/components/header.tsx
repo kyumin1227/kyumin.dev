@@ -1,7 +1,5 @@
-"use client";
-
 import GitHubIcon from "@mui/icons-material/GitHub";
-import { Box, Container, Grid2, Typography } from "@mui/material";
+import { Box, Button, Container, Grid2, Typography } from "@mui/material";
 import ThemeSwitch from "./ThemeSwitch";
 import { Playfair_Display } from "next/font/google";
 import Link from "next/link";
@@ -12,9 +10,6 @@ const playfair = Playfair_Display({
 });
 
 const Header = () => {
-  const openGitHub = () => {
-    window.open("https://github.com/kyumin1227", "_blank", "noopener,noreferrer");
-  };
   return (
     <Grid2 container maxWidth="lg" padding={2}>
       <Grid2 size="auto">
@@ -23,7 +18,9 @@ const Header = () => {
       <Grid2 size="grow"></Grid2>
       <Grid2 size="auto">
         <Link href="https://github.com/kyumin1227" target="_blank">
-          <GitHubIcon sx={{ padding: 1, width: "15px" }} />
+          <Button variant="text" color="primary">
+            <GitHubIcon sx={{ width: "15px" }} />
+          </Button>
         </Link>
       </Grid2>
       <Grid2 size="auto">

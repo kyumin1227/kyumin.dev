@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Header from "./components/header";
-import StyledComponentsRegistry from "@/lib/registry";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
-import { Box, Container } from "@mui/material";
+import { Box } from "@mui/material";
 import "../styles/reset.css";
+import "../styles/globals.css";
 import { ThemeProvider } from "next-themes";
+import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
+import theme from "../styles/theme";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,14 +22,14 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <ThemeProvider attribute={"class"} defaultTheme="system" enableSystem>
-          <StyledComponentsRegistry>
-            {/* <AppRouterCacheProvider> */}
-            <Box sx={{ width: "100vw", height: "100vh" }}>
-              <Header />
-              {children}
-            </Box>
-            {/* </AppRouterCacheProvider> */}
-          </StyledComponentsRegistry>
+          <MuiThemeProvider theme={theme}>
+            <AppRouterCacheProvider>
+              <Box sx={{ width: "100vw", height: "100vh" }}>
+                <Header />
+                {children}
+              </Box>
+            </AppRouterCacheProvider>
+          </MuiThemeProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -1,13 +1,17 @@
-// styles/theme.ts
+"use client";
+
 import { createTheme } from "@mui/material/styles";
 
-const muiTheme = createTheme({
+const theme = createTheme({
   palette: {
     primary: {
-      main: "#0070f3",
+      main: "#1926d2", // 기본 값 지정
     },
     secondary: {
-      main: "#ff4081",
+      main: "#dd004e",
+    },
+    background: {
+      default: "#ffffff",
     },
   },
   typography: {
@@ -15,4 +19,4 @@ const muiTheme = createTheme({
   },
 });
 
-export default muiTheme;
+export default theme;
