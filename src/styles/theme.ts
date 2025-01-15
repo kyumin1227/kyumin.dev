@@ -3,6 +3,10 @@
 import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
+  colorSchemes: { light: true, dark: true },
+  cssVariables: {
+    colorSchemeSelector: "class",
+  },
   palette: {
     primary: {
       main: "#1926d2", // 기본 값 지정

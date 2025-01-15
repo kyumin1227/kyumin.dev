@@ -1,20 +1,20 @@
 "use client";
 
-import { useTheme } from "next-themes";
+import { useColorScheme } from "@mui/material";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 
 const ThemeSwitch = () => {
-  const { theme, setTheme } = useTheme();
+  const { mode, setMode } = useColorScheme();
 
   return (
     <>
       <p
         onClick={() => {
-          setTheme(theme === "light" ? "dark" : "light");
+          setMode(mode === "light" ? "dark" : "light");
         }}
       >
-        {theme === "light" ? (
+        {mode === "light" ? (
           <LightModeIcon sx={{ padding: 1, width: "15px" }} />
         ) : (
           <DarkModeIcon sx={{ padding: 1, width: "15px" }} />
