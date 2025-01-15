@@ -17,6 +17,12 @@ const getPostByLangAndPostid = async (lang: string, series: string, postId: stri
   return content;
 };
 
+/**
+ * 글의 상세 정보
+ * @param req
+ * @param context
+ * @returns
+ */
 export async function GET(req: Request, context: { params: { lang: string; series: string; postId: string } }) {
   console.log("Requested language:", context.params.lang); // 확인용 로그
   const { lang, series, postId } = context.params;

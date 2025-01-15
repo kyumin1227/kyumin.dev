@@ -11,7 +11,7 @@ export default function Home() {
     const userLanguage = navigator.language;
 
     // 언어에 따른 경로 설정
-    const langRoute = userLanguage.startsWith("ko") ? "/kr" : "/jp";
+    const langRoute = userLanguage.startsWith("ko") ? "/ko" : "/jp";
 
     // 해당 언어 경로로 리다이렉트
     router.push(langRoute);

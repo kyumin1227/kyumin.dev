@@ -1,12 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter, useParams, usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import PostModal from "../components/PostModal";
 
 export default function PostsPage() {
   const [posts, setPosts] = useState<any[]>([]);
-  const router = useRouter();
   const { lang } = useParams();
   const pathname = usePathname();
   const [isModalOpen, setIsModalOpen] = useState(false);
