@@ -1,9 +1,8 @@
 "use client";
 
-import { Box, styled } from "@mui/material";
+import { Box, styled, useMediaQuery } from "@mui/material";
 import { motion } from "framer-motion";
-import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 interface PostModalProps {
   closeModal: () => void;
@@ -12,20 +11,27 @@ interface PostModalProps {
 
 const ModalWrapper = styled(motion(Box))`
   position: absolute;
-  top: 10vh;
+  top: 0;
+  bottom: 0;
   left: 0;
   right: 0;
-  margin: 0 auto;
-  height: 80vh;
-  aspect-ratio: 4 / 5;
+  margin: auto auto;
+  max-height: 94vh;
+  max-width: 94vw;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
   background-color: red;
   border-radius: 3%;
 `;
 
 function PostModal({ closeModal, postData }: PostModalProps) {
+  const isLandscape = useMediaQuery("(orientation: landscape)");
+
+  console.log(isLandscape);
+
   return (
     <>
-      <ModalWrapper layoutId={`${postData.path}`}>
+      <ModalWrapper layoutId={`${postData.path}`} sx={{ aspectRatio: isLandscape ? " 4 / 3" : "3 / 4" }}>
         {postData ? (
           <div className="modal">
             <div className="modal-content">
