@@ -11,15 +11,15 @@ const playfair = Playfair_Display({
 
 const Header = () => {
   return (
-    <Grid2 container maxWidth="lg" padding={2}>
+    <Grid2 container maxWidth="xl" padding={2}>
       <Grid2 size="auto">
         <Typography className={playfair.className}>Kyumin.dev</Typography>
       </Grid2>
       <Grid2 size="grow"></Grid2>
       <Grid2 size="auto">
         <Link href="https://github.com/kyumin1227" target="_blank">
-          <Button variant="text" color="primary">
-            <GitHubIcon sx={{ width: "15px" }} />
+          <Button variant="text">
+            <GitHubIcon />
           </Button>
         </Link>
       </Grid2>

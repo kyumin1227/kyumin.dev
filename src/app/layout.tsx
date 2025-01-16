@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import Header from "./components/header";
+import Header from "./components/Header";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
-import { Box } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import "../styles/reset.css";
-import "../styles/globals.css";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "../styles/theme";
 import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
@@ -24,9 +23,11 @@ export default function RootLayout({
         <InitColorSchemeScript attribute="class" />
         <ThemeProvider theme={theme}>
           <AppRouterCacheProvider>
-            <Box sx={{ width: "100vw", height: "100vh" }}>
-              <Header />
-              <main>{children}</main>
+            <Box sx={{ width: "100vw", height: "100vh", display: "flex", justifyContent: "center" }}>
+              <Container maxWidth="xl">
+                <Header />
+                <main>{children}</main>
+              </Container>
             </Box>
           </AppRouterCacheProvider>
         </ThemeProvider>

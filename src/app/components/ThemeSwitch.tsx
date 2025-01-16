@@ -14,11 +14,7 @@ const ThemeSwitch = () => {
           setMode(mode === "light" ? "dark" : "light");
         }}
       >
-        {mode === "light" ? (
-          <LightModeIcon sx={{ padding: 1, width: "15px" }} />
-        ) : (
-          <DarkModeIcon sx={{ padding: 1, width: "15px" }} />
-        )}
+        {mode === "light" ? <LightModeIcon sx={{ padding: 1 }} /> : <DarkModeIcon sx={{ padding: 1 }} />}
       </p>
     </>
   );

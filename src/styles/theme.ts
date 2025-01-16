@@ -7,17 +7,6 @@ const theme = createTheme({
   cssVariables: {
     colorSchemeSelector: "class",
   },
-  palette: {
-    primary: {
-      main: "#1926d2", // 기본 값 지정
-    },
-    secondary: {
-      main: "#dd004e",
-    },
-    background: {
-      default: "#ffffff",
-    },
-  },
   typography: {
     fontFamily: "Roboto, Arial, sans-serif",
   },

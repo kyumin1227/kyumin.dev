@@ -3,6 +3,19 @@
 import React, { useEffect, useState } from "react";
 import { useParams, usePathname } from "next/navigation";
 import PostModal from "../components/PostModal";
+import PostCard from "../components/PostCard";
+import { Grid2, styled } from "@mui/material";
+import { AnimatePresence, motion } from "framer-motion";
+
+const Overlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+`;
 
 export default function PostsPage() {
   const [posts, setPosts] = useState<any[]>([]);
@@ -32,11 +45,13 @@ export default function PostsPage() {
       setModalPostId(match[2]);
       console.log("match true");
       console.log(`${match[1]}/${match[2]}`);
+      document.body.style.overflow = "hidden";
     } else {
       setIsModalOpen(false);
       setModalSeriesId(null);
       setModalPostId(null);
       console.log("match false");
+      document.body.style.overflow = "auto";
     }
   }, [pathname]);
 
@@ -55,18 +70,28 @@ export default function PostsPage() {
   return (
     <div>
       <h1>글 목록 ({lang})</h1>
-      <ul>
+      <Grid2 container spacing={5}>
         {posts.map((series) =>
           series.posts.map((post: iPost) => (
-            <li key={post.path}>
-              <button onClick={() => openModal(post.path)}>{post.data.title}</button>
-            </li>
+            <React.Fragment key={post.path}>
+              <PostCard
+                path={post.path}
+                title={post.data.title}
+                description={post.data.description}
+                modalFunc={openModal}
+              />
+            </React.Fragment>
           ))
         )}
-      </ul>
+      </Grid2>
 
       {isModalOpen && modalSeriesId && modalPostId && (
-        <PostModal seriesId={modalSeriesId} postId={modalPostId} closeModal={closeModal} />
+        <>
+          <AnimatePresence>
+            <Overlay />
+            <PostModal seriesId={modalSeriesId} postId={modalPostId} closeModal={closeModal} />
+          </AnimatePresence>
+        </>
       )}
     </div>
   );
