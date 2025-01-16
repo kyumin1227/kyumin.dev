@@ -24,8 +24,7 @@ export default function PostsPage() {
   const { lang } = useParams();
   const pathname = usePathname();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalSeriesId, setModalSeriesId] = useState<string | null>(null);
-  const [modalPostId, setModalPostId] = useState<string | null>(null);
+  const [modalPost, setModalPost] = useState<any | null>(null);
 
   useEffect(() => {
     // 서버에서 글 목록 가져오기
@@ -43,15 +42,16 @@ export default function PostsPage() {
     const match = pathname.match(/\/posts\/([^/]+)\/([^/]+)/); // 정규식 수정
     if (match) {
       setIsModalOpen(true);
-      setModalSeriesId(match[1]);
-      setModalPostId(match[2]);
+      const selectedPost = posts
+        .find((series) => series.series === match[1])
+        ?.posts.find((post: any) => post.path === `${match[1]}/${match[2]}`);
+      setModalPost(selectedPost);
       console.log("match true");
       console.log(`${match[1]}/${match[2]}`);
       document.body.style.overflow = "hidden";
     } else {
       setIsModalOpen(false);
-      setModalSeriesId(null);
-      setModalPostId(null);
+      setModalPost(null);
       console.log("match false");
       document.body.style.overflow = "auto";
     }
@@ -60,13 +60,11 @@ export default function PostsPage() {
   const openModal = (postId: string) => {
     window.history.pushState({}, "", `/${lang}/posts/${postId}`); // URL 변경
     setIsModalOpen(true);
-    setModalSeriesId(postId);
   };
 
   const closeModal = () => {
     window.history.pushState({}, "", `/${lang}`); // URL 변경
     setIsModalOpen(false);
-    setModalSeriesId(null);
   };
 
   return (
@@ -87,11 +85,11 @@ export default function PostsPage() {
         )}
       </Grid2>
 
-      {isModalOpen && modalSeriesId && modalPostId && (
+      {isModalOpen && modalPost && (
         <>
           <AnimatePresence>
             <MotionModal open={isModalOpen} onClose={closeModal}>
-              <PostModal seriesId={modalSeriesId} postId={modalPostId} closeModal={closeModal} />
+              <PostModal postData={modalPost} closeModal={closeModal} />
             </MotionModal>
           </AnimatePresence>
         </>

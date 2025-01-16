@@ -6,9 +6,8 @@ import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 interface PostModalProps {
-  seriesId: string;
-  postId: string;
   closeModal: () => void;
+  postData: iPost;
 }
 
 const ModalWrapper = styled(motion(Box))`
@@ -23,34 +22,16 @@ const ModalWrapper = styled(motion(Box))`
   border-radius: 3%;
 `;
 
-function PostModal({ seriesId, postId, closeModal }: PostModalProps) {
-  const [post, setPost] = useState<iPost>();
-  const { lang } = useParams();
-
-  useEffect(() => {
-    const fetchPost = async () => {
-      console.log(`/api/${lang}/posts/${seriesId}/${postId}`);
-
-      const response: iPost = await fetch(`/api/${lang}/posts/${seriesId}/${postId}`).then((res) => res.json());
-
-      console.log(response);
-
-      setPost(response);
-    };
-
-    fetchPost();
-  }, [seriesId, postId]);
-
+function PostModal({ closeModal, postData }: PostModalProps) {
   return (
     <>
-      <ModalWrapper layoutId={`${seriesId}/${postId}`}>
-        <p>성공</p>
-        {post ? (
+      <ModalWrapper layoutId={`${postData.path}`}>
+        {postData ? (
           <div className="modal">
             <div className="modal-content">
               <button onClick={closeModal}>닫기</button>
-              <h1>{post.data.title}</h1>
-              <article>{post.content}</article>
+              <h1>{postData.data.title}</h1>
+              <article>{postData.content}</article>
             </div>
             <div className="modal-overlay" onClick={closeModal}></div>
           </div>
