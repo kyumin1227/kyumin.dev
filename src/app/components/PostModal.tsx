@@ -1,6 +1,6 @@
 "use client";
 
-import { styled } from "@mui/material";
+import { Box, styled } from "@mui/material";
 import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -11,17 +11,16 @@ interface PostModalProps {
   closeModal: () => void;
 }
 
-const ModalWrapper = styled(motion.div)`
-  top: 2.5vh;
+const ModalWrapper = styled(motion(Box))`
+  position: absolute;
+  top: 10vh;
   left: 0;
   right: 0;
-  bottom: 0;
-  position: fixed;
   margin: 0 auto;
-  background-color: blue;
-  z-index: 100;
+  height: 80vh;
+  aspect-ratio: 4 / 5;
+  background-color: red;
   border-radius: 3%;
-  aspect-ratio: "4 / 5" !important;
 `;
 
 function PostModal({ seriesId, postId, closeModal }: PostModalProps) {

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, usePathname } from "next/navigation";
 import PostModal from "../components/PostModal";
 import PostCard from "../components/PostCard";
-import { Grid2, styled } from "@mui/material";
+import { Grid2, Modal, styled } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 
 const Overlay = styled(motion.div)`
@@ -16,6 +16,8 @@ const Overlay = styled(motion.div)`
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 100;
 `;
+
+const MotionModal = motion(Modal);
 
 export default function PostsPage() {
   const [posts, setPosts] = useState<any[]>([]);
@@ -88,8 +90,9 @@ export default function PostsPage() {
       {isModalOpen && modalSeriesId && modalPostId && (
         <>
           <AnimatePresence>
-            <Overlay />
-            <PostModal seriesId={modalSeriesId} postId={modalPostId} closeModal={closeModal} />
+            <MotionModal open={isModalOpen} onClose={closeModal}>
+              <PostModal seriesId={modalSeriesId} postId={modalPostId} closeModal={closeModal} />
+            </MotionModal>
           </AnimatePresence>
         </>
       )}
