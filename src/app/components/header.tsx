@@ -1,9 +1,9 @@
-import GitHubIcon from "@mui/icons-material/GitHub";
-import { Box, Button, Container, Grid2, Typography } from "@mui/material";
+import { Grid2, Typography } from "@mui/material";
 import ThemeSwitch from "./ThemeSwitch";
 import { Playfair_Display } from "next/font/google";
 import Link from "next/link";
 import LanguageSwitch from "./LanguageSwitch";
+import MotionGitHubIcon from "./MotionGitHub";
 
 const playfair = Playfair_Display({
   subsets: ["vietnamese"], // 지원하는 언어 세트
@@ -25,7 +25,7 @@ const Header = () => {
       </Grid2>
       <Grid2 size="auto" padding={2}>
         <Link href="https://github.com/kyumin1227" target="_blank">
-          <GitHubIcon />
+          <MotionGitHubIcon />
         </Link>
       </Grid2>
     </Grid2>

@@ -50,12 +50,7 @@ const PostList = ({ posts, lang }: { posts: iPostsSepSeries[]; lang: string }) =
         {posts.map((series) =>
           series.posts.map((post: iPost) => (
             <React.Fragment key={post.path}>
-              <PostCard
-                path={post.path}
-                title={post.data.title}
-                description={post.data.description}
-                modalFunc={openModal}
-              />
+              <PostCard data={post} modalFunc={openModal} />
             </React.Fragment>
           ))
         )}

@@ -7,6 +7,7 @@ interface iPost {
   path: string;
   isEmpty: boolean;
   excerpt: string;
+  lang: string;
 }
 
 /**
@@ -15,6 +16,7 @@ interface iPost {
 interface iPostsSepSeries {
   series: string;
   posts: iPost[];
+  types: string[];
 }
 
 /**
@@ -23,6 +25,7 @@ interface iPostsSepSeries {
 interface iData {
   title: string;
   description: string;
-  date: Date;
+  date: string;
   tags: string[];
+  coverImage: string;
 }
