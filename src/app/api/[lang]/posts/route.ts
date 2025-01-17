@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 const GITHUB_API_URL = process.env.GITHUB_API_URL;
 const GITHUB_API_TOKEN = process.env.GITHUB_API_TOKEN;
 
-const fetchPosts = async (lang: string, series: string) => {
+const fetchPosts = async (lang: string, series: string, tagsCount: Record<string, number>) => {
   const postsData = await fetch(`${GITHUB_API_URL}/${series}`, {
     headers: {
       Authorization: `token ${GITHUB_API_TOKEN}`,
@@ -26,6 +26,16 @@ const fetchPosts = async (lang: string, series: string) => {
       const encodedMdx = await encodedMdxResponse.json();
       const mdx = Buffer.from(encodedMdx.content, "base64").toString("utf-8");
       const content = matter(mdx);
+
+      // "all" 태그의 개수 증가
+      tagsCount["all"] = (tagsCount["all"] || 0) + 1;
+
+      // tags 추출 및 개수 증가
+      if (content.data.tags && Array.isArray(content.data.tags)) {
+        content.data.tags.forEach((tag: string) => {
+          tagsCount[tag] = (tagsCount[tag] || 0) + 1; // 태그 개수 증가
+        });
+      }
 
       // 클라이언트에 데이터 전송을 위해 Uint8Array 형식인 orig 제거
       return { ...(({ orig, ...rest }) => rest)(content), path: `${series}/${path}`, lang };
@@ -53,17 +63,19 @@ export const getPostsSepSeries = async (lang: string) => {
   });
   const seriesData = await seriesResponse.json();
 
+  const tagsCount: Record<string, number> = {}; // 태그별 개수를 저장할 객체 생성
+
   // 각 시리즈의 포스트 데이터를 비동기적으로 가져옴
   const posts = await Promise.all(
     seriesData.map(async (series: any) => {
       console.log(series.name);
-      const postDatas = await fetchPosts(lang, series.name);
+      const postDatas = await fetchPosts(lang, series.name, tagsCount);
 
       return { series: series.name, posts: postDatas }; // 시리즈명과 글 데이터를 객체로 반환
     })
   );
 
-  return posts; // 모든 시리즈 데이터를 포함한 배열 반환
+  return { posts, tags: tagsCount }; // 모든 시리즈 데이터를 포함한 배열 반환
 };
 
 export async function GET(req: Request, context: { params: { lang: string } }) {

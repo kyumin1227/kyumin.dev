@@ -29,3 +29,8 @@ interface iData {
   tags: string[];
   coverImage: string;
 }
+
+interface iPostsSepSeriesAndTags {
+  posts: iPostsSepSeries[];
+  tags: Record<string, number>;
+}

@@ -19,7 +19,6 @@ const ModalWrapper = styled(motion(Box))`
   max-height: 94vh;
   max-width: 94vw;
   overflow: hidden;
-  aspect-ratio: 4 / 3;
   background-color: red;
   border-radius: 3%;
 `;
@@ -31,7 +30,7 @@ function PostModal({ closeModal, postData }: PostModalProps) {
 
   return (
     <>
-      <ModalWrapper layoutId={`${postData.path}`} sx={{ aspectRatio: isLandscape ? " 4 / 3" : "3 / 4" }}>
+      <ModalWrapper layoutId={`${postData.path}`} sx={{ aspectRatio: isLandscape ? " 4 / 3.5" : "3 / 4" }}>
         {postData ? (
           <div className="modal">
             <div className="modal-content">
