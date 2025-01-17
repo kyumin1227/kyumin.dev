@@ -26,7 +26,8 @@ const fetchPosts = async (lang: string, series: string) => {
       const encodedMdx = await encodedMdxResponse.json();
       const mdx = Buffer.from(encodedMdx.content, "base64").toString("utf-8");
       const content = matter(mdx);
-      return { ...content, path: `${series}/${path}` }; // map 내부에서 데이터를 반환
+      // 클라이언트에 데이터 전송을 위해 Uint8Array 형식인 orig 제거
+      return { ...(({ orig, ...rest }) => rest)(content), path: `${series}/${path}` };
     });
 
   const resolvedPosts = await Promise.all(postPromises);

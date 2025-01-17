@@ -3,6 +3,7 @@ import { Box, Button, Container, Grid2, Typography } from "@mui/material";
 import ThemeSwitch from "./ThemeSwitch";
 import { Playfair_Display } from "next/font/google";
 import Link from "next/link";
+import LanguageSwitch from "./LanguageSwitch";
 
 const playfair = Playfair_Display({
   subsets: ["vietnamese"], // 지원하는 언어 세트
@@ -16,15 +17,16 @@ const Header = () => {
         <Typography className={playfair.className}>Kyumin.dev</Typography>
       </Grid2>
       <Grid2 size="grow"></Grid2>
-      <Grid2 size="auto">
-        <Link href="https://github.com/kyumin1227" target="_blank">
-          <Button variant="text">
-            <GitHubIcon />
-          </Button>
-        </Link>
+      <Grid2 size="auto" padding={2}>
+        <LanguageSwitch />
       </Grid2>
-      <Grid2 size="auto">
+      <Grid2 size="auto" padding={2}>
         <ThemeSwitch />
+      </Grid2>
+      <Grid2 size="auto" padding={2}>
+        <Link href="https://github.com/kyumin1227" target="_blank">
+          <GitHubIcon />
+        </Link>
       </Grid2>
     </Grid2>
   );
