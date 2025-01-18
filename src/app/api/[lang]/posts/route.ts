@@ -7,6 +7,7 @@ import rehypeSanitize from "rehype-sanitize";
 import rehypeStringify from "rehype-stringify";
 import rehypePrettyCode from "rehype-pretty-code";
 import remarkToc from "remark-toc";
+import rehypeSlug from "rehype-slug";
 
 const GITHUB_API_URL = process.env.GITHUB_API_URL;
 const GITHUB_API_TOKEN = process.env.GITHUB_API_TOKEN;
@@ -39,12 +40,13 @@ const fetchPosts = async (lang: string, series: string, tagsCount: Record<string
       const content = matter(mdx);
 
       const compiledMdx = await unified()
-        .use(remarkToc)
+        .use(remarkToc, { maxDepth: 3 })
         .use(remarkParse)
         .use(remarkRehype)
         .use(rehypeSanitize)
         .use(rehypePrettyCode, { theme: "material-theme" })
         .use(rehypeStringify)
+        .use(rehypeSlug)
         .process(content.content);
 
       // "all" 태그의 개수 증가

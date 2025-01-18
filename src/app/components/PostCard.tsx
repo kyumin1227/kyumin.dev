@@ -104,7 +104,6 @@ const DynamicTagContainer = ({ tags }: { tags: string[] }) => {
 
     const calculateVisibleTags = () => {
       const wrapperWidth = wrapperElement?.getBoundingClientRect().width || 0;
-      console.log(wrapperWidth);
 
       let currentWidth = 0;
       const visible: string[] = [];
