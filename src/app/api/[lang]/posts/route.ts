@@ -38,7 +38,11 @@ const fetchPosts = async (lang: string, series: string, tagsCount: Record<string
       }
 
       // 클라이언트에 데이터 전송을 위해 Uint8Array 형식인 orig 제거
-      return { ...(({ orig, ...rest }) => rest)(content), path: `${series}/${path}`, lang };
+      return {
+        ...(({ orig, ...rest }) => rest)(content),
+        path: `${series}/${path}`,
+        lang,
+      };
     });
 
   const resolvedPosts = await Promise.all(postPromises);

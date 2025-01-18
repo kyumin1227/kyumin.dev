@@ -8,6 +8,7 @@ interface iPost {
   isEmpty: boolean;
   excerpt: string;
   lang: string;
+  compiledMdx: any;
 }
 
 /**
