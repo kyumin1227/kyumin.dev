@@ -1,14 +1,9 @@
 "use client";
 
-import { Box, styled, useMediaQuery } from "@mui/material";
+import { Box, styled, useMediaQuery, useTheme } from "@mui/material";
 import { motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
-import { MDXProvider } from "@mdx-js/react";
-import { evaluate } from "@mdx-js/mdx";
-import * as runtime from "react/jsx-runtime";
-import ReactMarkdown from "react-markdown";
-import rehypePrettyCode from "rehype-pretty-code";
-import "github-markdown-css";
+import React from "react";
+import "github-markdown-css/github-markdown.css";
 
 interface PostModalProps {
   closeModal: () => void;
@@ -27,43 +22,20 @@ const ModalWrapper = styled(motion(Box))`
   overflow: scroll;
   background-color: red;
   border-radius: 3%;
+  display: flex;
+  justify-content: center;
 `;
 
-const prettyCodeOptions = {
-  theme: "github-dark",
-  onVisitLine(node: any) {
-    if (node.children.length === 0) {
-      node.children = [{ type: "text", value: " " }];
-    }
-  },
-  onVisitHighlightedLine(node: any) {
-    node.properties.className.push("line--highlighted");
-  },
-  onVisitHighlightedWord(node: any) {
-    node.properties.className = ["word--highlighted"];
-  },
-};
+const MarkdownBody = styled(Box)`
+  max-width: 700px;
+  padding-left: 24px;
+  padding-right: 24px;
+`;
 
 function PostModal({ closeModal, postData }: PostModalProps) {
   const isLandscape = useMediaQuery("(orientation: landscape)");
 
-  // // evaluate 결과물(React 컴포넌트)을 담아둘 state
-  // // const [MDXContentUse, setMDXContentUse] = useState<React.ComponentType | null>(null);
-  // const [MDXDefinedComponent, setMDXDefinedComponent] = useState<any>(null);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const {
-  //       default: MDXContent,
-  //       MDXDefinedComponent,
-  //       ...rest
-  //     } = await evaluate(postData.compiledMdx, {
-  //       ...runtime,
-  //     });
-  //     console.log(MDXContent);
-  //     setMDXDefinedComponent(MDXDefinedComponent);
-  //   })();
-  // }, [postData]);
+  const theme = useTheme();
 
   return (
     <>
@@ -73,9 +45,13 @@ function PostModal({ closeModal, postData }: PostModalProps) {
             <div className="modal-content">
               <button onClick={closeModal}>닫기</button>
               <h1>{postData.data.title}</h1>
-              <ReactMarkdown className="markdown-body" rehypePlugins={[[rehypePrettyCode, prettyCodeOptions]]}>
-                {postData.content}
-              </ReactMarkdown>
+              {/* 기존 모듈 수정 필요 */}
+              {/* github-markdown-css/github-markdown.css 의 색상 선택 부분 클래스 및 조건 변경 */}
+              <MarkdownBody
+                className={`markdown-body ${theme.palette.mode === "dark" ? "markdown-dark" : "markdown-light"}`}
+              >
+                <div dangerouslySetInnerHTML={{ __html: postData.compiledMdx }} />
+              </MarkdownBody>
             </div>
             <div className="modal-overlay" onClick={closeModal}></div>
           </div>

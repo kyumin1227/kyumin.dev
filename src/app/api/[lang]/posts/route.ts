@@ -1,8 +1,19 @@
 import matter from "gray-matter";
 import { NextResponse } from "next/server";
+import { unified } from "unified";
+import remarkParse from "remark-parse";
+import remarkRehype from "remark-rehype";
+import rehypeSanitize from "rehype-sanitize";
+import rehypeStringify from "rehype-stringify";
+import rehypePrettyCode from "rehype-pretty-code";
+import remarkToc from "remark-toc";
 
 const GITHUB_API_URL = process.env.GITHUB_API_URL;
 const GITHUB_API_TOKEN = process.env.GITHUB_API_TOKEN;
+
+const prettyCodeOptions = {
+  theme: "github-dark",
+};
 
 const fetchPosts = async (lang: string, series: string, tagsCount: Record<string, number>) => {
   const postsData = await fetch(`${GITHUB_API_URL}/${series}`, {
@@ -27,6 +38,15 @@ const fetchPosts = async (lang: string, series: string, tagsCount: Record<string
       const mdx = Buffer.from(encodedMdx.content, "base64").toString("utf-8");
       const content = matter(mdx);
 
+      const compiledMdx = await unified()
+        .use(remarkToc)
+        .use(remarkParse)
+        .use(remarkRehype)
+        .use(rehypeSanitize)
+        .use(rehypePrettyCode, { theme: "material-theme" })
+        .use(rehypeStringify)
+        .process(content.content);
+
       // "all" 태그의 개수 증가
       tagsCount["all"] = (tagsCount["all"] || 0) + 1;
 
@@ -42,6 +62,7 @@ const fetchPosts = async (lang: string, series: string, tagsCount: Record<string
         ...(({ orig, ...rest }) => rest)(content),
         path: `${series}/${path}`,
         lang,
+        compiledMdx: String(compiledMdx),
       };
     });
 
