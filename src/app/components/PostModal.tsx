@@ -312,14 +312,16 @@ function PostModal({ closeModal, postData }: PostModalProps) {
         ) : (
           <div>로딩 중...</div>
         )}
-        {toc && isWide && (
+        {isWide && (
           <Toc>
-            <ReactMarkdown rehypePlugins={[rehypeRaw]}>
-              {`${toc.replace(/<li><a href="#(.*?)"([^>]*)>/g, (match, id, attributes) => {
-                const activeClass = activeIds.includes(id) ? "active" : "";
-                return `<li><a class="${activeClass}" href="#${id}" ${attributes}>`;
-              })}`}
-            </ReactMarkdown>
+            {toc && (
+              <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+                {`${toc.replace(/<li><a href="#(.*?)"([^>]*)>/g, (match, id, attributes) => {
+                  const activeClass = activeIds.includes(id) ? "active" : "";
+                  return `<li><a class="${activeClass}" href="#${id}" ${attributes}>`;
+                })}`}
+              </ReactMarkdown>
+            )}
           </Toc>
         )}
         <div className="modal-overlay" onClick={closeModal}></div>
