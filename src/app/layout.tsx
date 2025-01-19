@@ -6,6 +6,7 @@ import "../styles/reset.css";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "../styles/theme";
 import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
+import Footer from "./components/Footer";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -26,7 +27,8 @@ export default function RootLayout({
             <Box sx={{ width: "100vw", height: "100vh", display: "flex", justifyContent: "center" }}>
               <Container maxWidth="xl">
                 <Header />
-                <main>{children}</main>
+                <Box mt={"92px"}>{children}</Box>
+                <Footer />
               </Container>
             </Box>
           </AppRouterCacheProvider>

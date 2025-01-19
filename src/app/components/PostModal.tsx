@@ -7,6 +7,8 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import "github-markdown-css/github-markdown.css"; // 기존 모듈 수정 필요 (색상 선택을 위한 클래스 추가 및 조건 변경)
 import Comments from "./Comments";
+import Link from "next/link";
+import CommentIcon from "@mui/icons-material/Comment";
 
 const CONTENTS_ID = "contents"; // 목차로 이용할 ID
 
@@ -25,10 +27,11 @@ const ModalWrapper = styled(motion(Grid2))`
   padding-top: 10px;
   max-height: 94vh;
   width: min(94vw, 1200px);
-  border-radius: 12px;
+  border-radius: 10px;
   display: flex;
   justify-content: center;
   overflow-y: scroll;
+  scroll-behavior: smooth;
   ::-webkit-scrollbar {
     display: none;
   }
@@ -37,11 +40,26 @@ const ModalWrapper = styled(motion(Grid2))`
 const MarkdownBody = styled(Box)`
   width: min(100%, 750px);
   position: relative;
+
+  /* 이미지 중앙 정렬 */
+  img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+  }
+
+  h1,
+  h2,
+  h3 {
+    scroll-margin-top: 10px;
+  }
 `;
 
 // 목차 스타일링
 const Toc = styled(Box)`
   max-width: 180px;
+  width: 180px;
   position: sticky;
   padding-left: 24px;
   top: 200px;
@@ -84,7 +102,7 @@ const ScrollPercentageWrapper = styled(Box)`
 
 const ScrollPercentage = styled(Box)`
   background-color: ${({ theme }) => theme.palette.primary.main};
-  height: 100%;
+  height: 60%;
 `;
 
 function PostModal({ closeModal, postData }: PostModalProps) {
@@ -120,6 +138,7 @@ function PostModal({ closeModal, postData }: PostModalProps) {
     };
   }, []);
 
+  // 현재 스크롤 비율 감지
   useEffect(() => {
     const modalElement = wrapperRef.current;
 
@@ -304,7 +323,22 @@ function PostModal({ closeModal, postData }: PostModalProps) {
               className={`markdown-body ${theme.palette.mode === "dark" ? "markdown-dark" : "markdown-light"}`}
               paddingX={isWide ? "0" : "24px"}
             >
-              {!isWide && toc && <ReactMarkdown rehypePlugins={[rehypeRaw]}>{toc}</ReactMarkdown>}
+              {!isWide && toc && (
+                <ReactMarkdown
+                  rehypePlugins={[rehypeRaw]}
+                  components={{
+                    h1: ({ node, ...props }) => {
+                      // id가 "contents"인 경우 렌더링하지 않음
+                      if (props.id === "contents") {
+                        return null;
+                      }
+                      return <h1 {...props} />;
+                    },
+                  }}
+                >
+                  {toc}
+                </ReactMarkdown>
+              )}
               <ReactMarkdown rehypePlugins={[rehypeRaw]}>{postData.compiledMdx}</ReactMarkdown>
               <Comments />
             </MarkdownBody>
@@ -315,12 +349,28 @@ function PostModal({ closeModal, postData }: PostModalProps) {
         {isWide && (
           <Toc>
             {toc && (
-              <ReactMarkdown rehypePlugins={[rehypeRaw]}>
-                {`${toc.replace(/<li><a href="#(.*?)"([^>]*)>/g, (match, id, attributes) => {
-                  const activeClass = activeIds.includes(id) ? "active" : "";
-                  return `<li><a class="${activeClass}" href="#${id}" ${attributes}>`;
-                })}`}
-              </ReactMarkdown>
+              <>
+                <ReactMarkdown
+                  rehypePlugins={[rehypeRaw]}
+                  components={{
+                    h1: ({ node, ...props }) => {
+                      // id가 "contents"인 경우 렌더링하지 않음
+                      if (props.id === "contents") {
+                        return null;
+                      }
+                      return <h1 {...props} />;
+                    },
+                  }}
+                >
+                  {`${toc.replace(/<li><a href="#(.*?)"([^>]*)>/g, (match, id, attributes) => {
+                    const activeClass = activeIds.includes(id) ? "active" : "";
+                    return `<li><a class="${activeClass}" href="#${id}" ${attributes}>`;
+                  })}`}
+                </ReactMarkdown>
+                <Link href={`#comments`}>
+                  <CommentIcon />
+                </Link>
+              </>
             )}
           </Toc>
         )}

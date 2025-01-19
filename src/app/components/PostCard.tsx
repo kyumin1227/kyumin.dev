@@ -187,7 +187,7 @@ const PostCard = ({ data, modalFunc }: PostCardProps) => {
       >
         <ImgWrapper size="grow">
           <img src="https://www.sanrio.co.jp/wp-content/uploads/2022/06/gallery-cogimyun5.png" alt="Image Text" />
-          {/* <img src={data.data.coverImage} alt="Image Text" /> */}
+          {/* <img src={data.data.coverImage} alt="CoverImage" /> */}
         </ImgWrapper>
         <TextWrapper size="auto" width={"100%"}>
           <TitleTypography fontSize={22}>{data.data.title}</TitleTypography>
