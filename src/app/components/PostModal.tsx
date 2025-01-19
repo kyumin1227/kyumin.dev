@@ -21,20 +21,21 @@ const ModalWrapper = styled(motion(Grid2))`
   left: 0;
   right: 0;
   margin: auto auto;
+  padding-top: 10px;
   max-height: 94vh;
   width: min(94vw, 1200px);
-  border-radius: 10px;
+  border-radius: 12px;
   display: flex;
   justify-content: center;
-  overflow: scroll;
+  overflow-y: scroll;
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const MarkdownBody = styled(Box)`
   width: min(100%, 750px);
   position: relative;
-  ::-webkit-scrollbar {
-    display: none;
-  }
 `;
 
 // 목차 스타일링
@@ -69,10 +70,27 @@ const Toc = styled(Box)`
   }
 `;
 
+const ScrollPercentageWrapper = styled(Box)`
+  position: fixed;
+  top: 3vh;
+  height: 10px;
+  width: min(94vw, 1200px);
+  background-color: ${({ theme }) => theme.palette.background.paper};
+  z-index: 100;
+  border-radius: 10px 10px 0 0;
+  overflow: hidden;
+`;
+
+const ScrollPercentage = styled(Box)`
+  background-color: ${({ theme }) => theme.palette.primary.main};
+  height: 100%;
+`;
+
 function PostModal({ closeModal, postData }: PostModalProps) {
   const theme = useTheme();
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [isWide, setIsWide] = useState(false);
+  const [scrollPercentage, setScrollPercentage] = useState(0);
   const [toc, setToc] = useState<string | null>(null);
   const [activeIds, setActiveIds] = useState<string[]>([]);
 
@@ -98,6 +116,43 @@ function PostModal({ closeModal, postData }: PostModalProps) {
 
     return () => {
       observer.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    const modalElement = wrapperRef.current;
+
+    if (!modalElement) return;
+
+    const updateHeights = () => {
+      const maxScroll = modalElement.scrollHeight - modalElement.clientHeight; // 최대 스크롤 위치
+
+      const scrollPercentage = maxScroll > 0 ? (modalElement.scrollTop / maxScroll) * 100 : 0; // 스크롤 비율 계산
+      setScrollPercentage(scrollPercentage);
+      console.log(`스크롤 비율: ${scrollPercentage}%`);
+    };
+
+    // 초기 높이 및 스크롤 위치 설정
+    updateHeights();
+
+    // ResizeObserver로 높이 변화 감지
+    const observer = new ResizeObserver(() => {
+      updateHeights();
+    });
+
+    observer.observe(modalElement);
+
+    // 스크롤 이벤트 처리
+    const handleScroll = () => {
+      updateHeights();
+    };
+
+    modalElement.addEventListener("scroll", handleScroll);
+
+    // 정리 함수
+    return () => {
+      observer.disconnect();
+      modalElement.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -234,6 +289,9 @@ function PostModal({ closeModal, postData }: PostModalProps) {
         sx={{ backgroundColor: theme.palette.mode === "dark" ? "#0d1117" : "#ffffff" }}
         position="relative"
       >
+        <ScrollPercentageWrapper>
+          <ScrollPercentage width={`${scrollPercentage}%`} />
+        </ScrollPercentageWrapper>
         {postData ? (
           <Grid2
             display="flex"
@@ -243,6 +301,7 @@ function PostModal({ closeModal, postData }: PostModalProps) {
           >
             <MarkdownBody
               className={`markdown-body ${theme.palette.mode === "dark" ? "markdown-dark" : "markdown-light"}`}
+              paddingX={isWide ? "0" : "24px"}
             >
               {!isWide && toc && <ReactMarkdown rehypePlugins={[rehypeRaw]}>{toc}</ReactMarkdown>}
               <ReactMarkdown rehypePlugins={[rehypeRaw]}>{postData.compiledMdx}</ReactMarkdown>
