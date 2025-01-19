@@ -1,3 +1,4 @@
+import Comments from "@/app/components/Comments";
 import { Box, Button } from "@mui/material";
 import matter from "gray-matter";
 
@@ -26,6 +27,7 @@ export default async function PostPage({ params }: { params: { lang: string; id:
       <>
         <Button color="secondary">fdas</Button>
         <div>게시물이 존재하지 않습니다.</div>
+        <Comments />
       </>
     );
   }
@@ -35,6 +37,7 @@ export default async function PostPage({ params }: { params: { lang: string; id:
       <Button>fdas</Button>
       <h1>{post.data.title}</h1>
       <article>{post.content}</article>
+      <Comments />
     </div>
   );
 }

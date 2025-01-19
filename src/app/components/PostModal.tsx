@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import "github-markdown-css/github-markdown.css"; // 기존 모듈 수정 필요 (색상 선택을 위한 클래스 추가 및 조건 변경)
+import Comments from "./Comments";
 
 const CONTENTS_ID = "contents"; // 목차로 이용할 ID
 
@@ -305,6 +306,7 @@ function PostModal({ closeModal, postData }: PostModalProps) {
             >
               {!isWide && toc && <ReactMarkdown rehypePlugins={[rehypeRaw]}>{toc}</ReactMarkdown>}
               <ReactMarkdown rehypePlugins={[rehypeRaw]}>{postData.compiledMdx}</ReactMarkdown>
+              <Comments />
             </MarkdownBody>
           </Grid2>
         ) : (
