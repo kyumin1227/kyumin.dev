@@ -1,17 +1,29 @@
 "use client";
 
 import { Box, styled } from "@mui/material";
+import React, { useState } from "react";
+import PostList from "./PostList";
 
 const MAX_TAG_LENGTH = 20;
 
-const Tag = ({ tag, count }: { tag: string; count: number }) => {
-  // MAX_TAG_LENGTH를 초과하면 ...을 붙여서 표시
+const Tag = ({
+  tag,
+  count,
+  isSelected,
+  onClick,
+}: {
+  tag: string;
+  count: number;
+  isSelected: boolean;
+  onClick: () => void;
+}) => {
   const truncatedTag = tag.length > MAX_TAG_LENGTH ? `${tag.slice(0, MAX_TAG_LENGTH)}...` : tag;
 
   return (
     <Box
+      onClick={onClick}
       sx={{
-        backgroundColor: "primary.main",
+        backgroundColor: isSelected ? "secondary.main" : "primary.main",
         color: "white",
         padding: "0.5rem",
         marginRight: "0.5rem",
@@ -21,6 +33,8 @@ const Tag = ({ tag, count }: { tag: string; count: number }) => {
         fontSize: "1rem",
         fontWeight: "bold",
         width: "fit-content",
+        cursor: "pointer",
+        userSelect: "none",
       }}
     >
       {truncatedTag} ({count})
@@ -34,19 +48,62 @@ const WrapperTags = styled(Box)`
   margin-bottom: 32px;
 `;
 
-const FilterTags = ({ tags, lang }: { tags: Record<string, number>; lang: string }) => {
-  const tagEntries = Object.entries(tags);
-  const [firstTag, ...otherTags] = tagEntries;
+const FilterTags = ({ tags, lang, postDatas }: { tags: Record<string, number>; lang: string; postDatas: iPost[] }) => {
+  const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
 
-  console.log(firstTag);
+  const handleTagClick = (tag: string) => {
+    setSelectedTags((prev) => {
+      const updated = new Set(prev);
+
+      // "all" 태그가 선택되면 다른 태그 선택 해제
+      if (tag === "all") {
+        return new Set(["all"]);
+      }
+
+      // 태그 선택/해제
+      if (updated.has(tag)) {
+        updated.delete(tag);
+      } else {
+        updated.add(tag);
+      }
+
+      return updated;
+    });
+  };
+
+  const handleTagAllClick = () => {
+    setSelectedTags(new Set());
+  };
+
+  // 선택된 태그에 따라 postDatas 필터링
+  const filteredPosts = selectedTags.size
+    ? postDatas.filter((post) => Array.from(selectedTags).some((tag) => post.data.tags.includes(tag)))
+    : postDatas;
+
+  console.log(filteredPosts);
 
   return (
-    <WrapperTags>
-      <Tag tag={lang === "ko" ? "전체" : "全体"} count={firstTag[1]} />
-      {otherTags.map(([tag, count]) => (
-        <Tag key={tag} tag={tag} count={count} />
-      ))}
-    </WrapperTags>
+    <>
+      <Box>
+        <WrapperTags>
+          {/* 태그 목록 출력 */}
+          {Object.entries(tags).map(([tag, count]) =>
+            tag !== "all" ? (
+              <Tag
+                key={tag}
+                tag={tag}
+                count={count}
+                isSelected={selectedTags.has(tag)}
+                onClick={() => handleTagClick(tag)}
+              />
+            ) : (
+              <Tag key={tag} tag={tag} count={count} isSelected={selectedTags.size === 0} onClick={handleTagAllClick} />
+            )
+          )}
+        </WrapperTags>
+      </Box>
+      <PostList lang={lang} posts={filteredPosts} />
+    </>
   );
 };
 

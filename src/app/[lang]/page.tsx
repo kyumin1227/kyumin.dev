@@ -1,6 +1,6 @@
-import PostList from "../components/PostList";
 import { getPostsSepSeries } from "../api/[lang]/posts/route";
 import FilterTags from "../components/FiterTags";
+import serializePosts from "@/utils/serializedPosts";
 
 const getPosts = async (lang: string) => {
   const { posts, tags }: iPostsSepSeriesAndTags = await getPostsSepSeries(lang);
@@ -14,10 +14,11 @@ export default async function PostsPage({ params }: { params: { lang: string } }
   console.log(posts);
   console.log(tags);
 
+  const postDatas = serializePosts(posts);
+
   return (
     <div>
-      <FilterTags tags={tags} lang={lang} />
-      <PostList posts={posts} lang={lang} />
+      <FilterTags tags={tags} lang={lang} postDatas={postDatas} />
     </div>
   );
 }

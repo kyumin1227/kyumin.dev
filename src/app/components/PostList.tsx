@@ -9,7 +9,7 @@ import { usePathname } from "next/navigation";
 
 const MotionModal = motion(Modal);
 
-const PostList = ({ posts, lang }: { posts: iPostsSepSeries[]; lang: string }) => {
+const PostList = ({ posts, lang }: { posts: iPost[]; lang: string }) => {
   const pathname = usePathname();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalPost, setModalPost] = useState<any | null>(null);
@@ -19,9 +19,7 @@ const PostList = ({ posts, lang }: { posts: iPostsSepSeries[]; lang: string }) =
     const match = pathname.match(/\/posts\/([^/]+)\/([^/]+)/); // 정규식 수정
     if (match) {
       setIsModalOpen(true);
-      const selectedPost = posts
-        .find((series) => series.series === match[1])
-        ?.posts.find((post: any) => post.path === `${match[1]}/${match[2]}`);
+      const selectedPost = posts.find((post: any) => post.path === `${match[1]}/${match[2]}`);
       setModalPost(selectedPost);
       console.log("match true");
       console.log(`${match[1]}/${match[2]}`);
@@ -47,13 +45,11 @@ const PostList = ({ posts, lang }: { posts: iPostsSepSeries[]; lang: string }) =
   return (
     <>
       <Grid2 container spacing={5}>
-        {posts.map((series) =>
-          series.posts.map((post: iPost) => (
-            <React.Fragment key={post.path}>
-              <PostCard data={post} modalFunc={openModal} />
-            </React.Fragment>
-          ))
-        )}
+        {posts.map((post: iPost) => (
+          <React.Fragment key={post.path}>
+            <PostCard data={post} modalFunc={openModal} />
+          </React.Fragment>
+        ))}
       </Grid2>
 
       {isModalOpen && modalPost && (

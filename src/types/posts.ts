@@ -17,7 +17,6 @@ interface iPost {
 interface iPostsSepSeries {
   series: string;
   posts: iPost[];
-  types: string[];
 }
 
 /**
