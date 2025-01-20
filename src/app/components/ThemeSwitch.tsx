@@ -19,9 +19,9 @@ const ThemeSwitch = () => {
         }}
       >
         {mode === "light" ? (
-          <MotionLightModeIcon whileHover={{ scale: 1.3 }} />
+          <MotionLightModeIcon color="primary" whileHover={{ scale: 1.3 }} />
         ) : (
-          <MotionDarkModeIcon whileHover={{ scale: 1.3 }} />
+          <MotionDarkModeIcon color="primary" whileHover={{ scale: 1.3 }} />
         )}
       </p>
     </>

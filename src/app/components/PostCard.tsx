@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Grid2, styled, Typography } from "@mui/material";
+import { Box, Grid2, styled, Typography, useTheme } from "@mui/material";
 import { motion } from "framer-motion";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -16,7 +16,7 @@ interface PostCardProps {
 const CardWrapper = styled(motion(Grid2))`
   border-radius: 3%;
   aspect-ratio: 4 / 3.5;
-  border: 2px solid #e0e0e0;
+  border: 1px solid;
 `;
 
 const ImgWrapper = styled(Grid2)`
@@ -26,7 +26,7 @@ const ImgWrapper = styled(Grid2)`
   display: flex;
   overflow: hidden;
   border-radius: 3% 3% 0 0;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 1px solid;
 
   img {
     width: 100%;
@@ -79,7 +79,7 @@ const Tag = ({ tag }: { tag: string }) => {
     <Box
       sx={{
         backgroundColor: "primary.main",
-        color: "white",
+        color: "common.background",
         padding: "0.5rem",
         marginRight: "0.5rem",
         marginTop: "4px",
@@ -148,6 +148,7 @@ const PostCard = ({ data, modalFunc }: PostCardProps) => {
   const date = new Date(data.data.date);
   const [dateString, setDateString] = useState<string>("");
   const [readingTimeString, setReadingTimeString] = useState<string>("");
+  const theme = useTheme();
 
   useEffect(() => {
     setDateString(formatDate(date, data.lang));
@@ -162,7 +163,7 @@ const PostCard = ({ data, modalFunc }: PostCardProps) => {
         layoutId={data.path}
         size={{ xs: 12, sm: 6, lg: 4 }}
         onClick={() => modalFunc(data.path)}
-        whileHover={{ scale: 1.02 }}
+        whileHover={{ scale: 1.05 }}
         direction={"column"}
       >
         <ImgWrapper size="grow">

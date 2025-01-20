@@ -35,6 +35,7 @@ const ModalWrapper = styled(motion(Grid2))`
   padding-top: 10px;
   max-height: 94vh;
   width: min(94vw, 1200px);
+  border: 2px solid ${({ theme }) => theme.palette.divider};
   border-radius: 10px;
   display: flex;
   justify-content: center;
@@ -96,8 +97,8 @@ const Toc = styled(Box)`
 
   .active {
     font-weight: bold;
-    color: ${({ theme }) => (theme.palette.mode === "dark" ? "#ffcc00" : "#0056b3")};
-    border-left: 3px solid ${({ theme }) => (theme.palette.mode === "dark" ? "#ffcc00" : "#0056b3")};
+    color: ${({ theme }) => theme.palette.primary.main};
+    border-left: 3px solid ${({ theme }) => theme.palette.primary.main};
   }
 `;
 
@@ -106,15 +107,19 @@ const ScrollPercentageWrapper = styled(Box)`
   top: 3vh;
   height: 10px;
   width: min(94vw, 1200px);
+  max-width: 1200px;
   background-color: ${({ theme }) => theme.palette.background.paper};
   z-index: 100;
   border-radius: 10px 10px 0 0;
   overflow: hidden;
+  border: 2px solid ${({ theme }) => theme.palette.divider};
+  border-bottom: none;
+  box-sizing: border-box;
 `;
 
 const ScrollPercentage = styled(Box)`
   background-color: ${({ theme }) => theme.palette.primary.main};
-  height: 60%;
+  height: 80%;
 `;
 
 const TagWrapper = styled(Box)`
@@ -128,7 +133,7 @@ const Tag = styled(Box)`
   margin: 4px;
   padding: 8px;
   border-radius: 4px;
-  color: white;
+  color: ${({ theme }) => (theme.palette.mode === "dark" ? theme.palette.common.black : theme.palette.common.white)};
 `;
 
 function PostModal({ closeModal, postData }: PostModalProps) {

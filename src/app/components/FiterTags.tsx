@@ -1,46 +1,9 @@
 "use client";
 
-import { Box, styled } from "@mui/material";
+import { Box, Button, styled, useTheme } from "@mui/material";
 import React, { useState } from "react";
 import PostList from "./PostList";
-
-const MAX_TAG_LENGTH = 20;
-
-const Tag = ({
-  tag,
-  count,
-  isSelected,
-  onClick,
-}: {
-  tag: string;
-  count: number;
-  isSelected: boolean;
-  onClick: () => void;
-}) => {
-  const truncatedTag = tag.length > MAX_TAG_LENGTH ? `${tag.slice(0, MAX_TAG_LENGTH)}...` : tag;
-
-  return (
-    <Box
-      onClick={onClick}
-      sx={{
-        backgroundColor: isSelected ? "secondary.main" : "primary.main",
-        color: "white",
-        padding: "0.5rem",
-        marginRight: "0.5rem",
-        marginTop: "4px",
-        marginBottom: "8px",
-        borderRadius: "0.5rem",
-        fontSize: "1rem",
-        fontWeight: "bold",
-        width: "fit-content",
-        cursor: "pointer",
-        userSelect: "none",
-      }}
-    >
-      {truncatedTag} ({count})
-    </Box>
-  );
-};
+import Tag from "./Tag";
 
 const WrapperTags = styled(Box)`
   display: flex;
@@ -49,6 +12,7 @@ const WrapperTags = styled(Box)`
 `;
 
 const FilterTags = ({ tags, lang, postDatas }: { tags: Record<string, number>; lang: string; postDatas: iPost[] }) => {
+  const theme = useTheme();
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
 
   const handleTagClick = (tag: string) => {
@@ -94,10 +58,18 @@ const FilterTags = ({ tags, lang, postDatas }: { tags: Record<string, number>; l
                 tag={tag}
                 count={count}
                 isSelected={selectedTags.has(tag)}
+                theme={theme}
                 onClick={() => handleTagClick(tag)}
               />
             ) : (
-              <Tag key={tag} tag={tag} count={count} isSelected={selectedTags.size === 0} onClick={handleTagAllClick} />
+              <Tag
+                key={tag}
+                tag={lang === "ko" ? "전체" : "全体"}
+                count={count}
+                isSelected={selectedTags.size === 0}
+                theme={theme}
+                onClick={handleTagAllClick}
+              />
             )
           )}
         </WrapperTags>

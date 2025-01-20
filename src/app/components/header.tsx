@@ -1,17 +1,11 @@
 "use client";
 
-import { Grid2, Typography, useTheme } from "@mui/material";
+import { Grid2, Link, Typography, useTheme } from "@mui/material";
 import ThemeSwitch from "./ThemeSwitch";
 import { Playfair_Display } from "next/font/google";
-import Link from "next/link";
 import LanguageSwitch from "./LanguageSwitch";
 import MotionGitHubIcon from "./MotionGitHub";
 import { useEffect, useState } from "react";
-
-const playfair = Playfair_Display({
-  subsets: ["vietnamese"], // 지원하는 언어 세트
-  weight: ["400", "700"], // 사용할 폰트 굵기
-});
 
 const Header = () => {
   const theme = useTheme();
@@ -55,11 +49,14 @@ const Header = () => {
       zIndex={1000}
       display={"flex"}
       justifyContent={"center"}
+      borderBottom={"1px solid"}
     >
-      <Grid2 container width={"100%"} maxWidth="xl" padding={2}>
-        <Grid2 size="auto">
-          <Typography className={playfair.className}>
-            <Link href={"/"}>Kyumin.dev</Link>
+      <Grid2 container width={"100%"} maxWidth="xl" padding={1}>
+        <Grid2 size="auto" display={"flex"} alignItems={"center"} marginLeft={1}>
+          <Typography variant="h5">
+            <Link href={"/"} sx={{ textDecoration: "none" }}>
+              Kyumin.dev
+            </Link>
           </Typography>
         </Grid2>
         <Grid2 size="grow"></Grid2>
