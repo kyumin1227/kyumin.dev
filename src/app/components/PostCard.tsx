@@ -6,6 +6,7 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import readingTime from "reading-time";
 import { useEffect, useRef, useState } from "react";
+import { formatDate, formatReadingTime } from "@/utils/dataFormatter";
 
 interface PostCardProps {
   data: iPost;
@@ -57,7 +58,7 @@ const OverflowIndicator = styled(Box)`
   pointer-events: none; /* 클릭 불가능 처리 */
 `;
 
-const IconAndText = styled(Box)`
+export const IconAndText = styled(Grid2)`
   display: flex;
   align-items: "center";
 `;
@@ -148,30 +149,9 @@ const PostCard = ({ data, modalFunc }: PostCardProps) => {
   const [dateString, setDateString] = useState<string>("");
   const [readingTimeString, setReadingTimeString] = useState<string>("");
 
-  // post의 언어에 따라 시간 표시 및 날짜 표시 방식 변경
-  //   한국어 = xxxx년 xx월 xx일
-  //   일본어 = xxxx年xx月xx日
   useEffect(() => {
-    const time = text.split(" ")[0];
-    if (data.lang === "ko") {
-      setReadingTimeString(`${time} 분`);
-      setDateString(
-        date.toLocaleDateString("ko-KR", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })
-      );
-    } else if (data.lang === "ja") {
-      setReadingTimeString(`${time}分`);
-      setDateString(
-        date.toLocaleDateString("ja-JP", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })
-      );
-    }
+    setDateString(formatDate(date, data.lang));
+    setReadingTimeString(formatReadingTime(text, data.lang));
   }, [data.lang, date, text]);
 
   return (

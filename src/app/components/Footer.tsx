@@ -16,12 +16,11 @@ const Footer = () => {
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
-      gap={1} // 간격 추가
     >
       {/* Contact 정보 */}
-      <Typography variant="body1" fontWeight="500" display="flex" alignItems="center" gap={1}>
+      <Typography variant="body1" fontWeight="500" display="flex" alignItems="center" gap={1} marginBottom={1}>
         <Email fontSize="small" />
-        Contact:{" "}
+        Contact{" "}
         <Link
           href="mailto:kyumin12271227@gmail.com"
           underline="hover"
@@ -35,7 +34,7 @@ const Footer = () => {
       </Typography>
 
       {/* Copyright 정보 */}
-      <Typography variant="body2" fontWeight="500" display="flex" alignItems="center" gap={1}>
+      <Typography variant="body2" fontWeight="500" display="flex" alignItems="center" gap={1} marginBottom={1}>
         ⓒ 2025.{" "}
         <Link
           href="https://github.com/kyumin1227"
@@ -52,8 +51,7 @@ const Footer = () => {
       </Typography>
 
       {/* Vercel 제공 정보 */}
-      <Typography variant="body2" fontWeight="500" display="flex" alignItems="center" gap={1}>
-        <Cloud fontSize="small" />
+      <Typography variant="body2" fontWeight="500" display="flex" alignItems="center" gap={1} marginBottom={1}>
         Powered by{" "}
         <Link
           href="https://vercel.com"

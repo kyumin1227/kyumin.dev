@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Grid2, styled, useTheme } from "@mui/material";
+import { Box, Button, Divider, Grid2, styled, Typography, useTheme } from "@mui/material";
 import { motion } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
@@ -9,6 +9,14 @@ import "github-markdown-css/github-markdown.css"; // 기존 모듈 수정 필요
 import Comments from "./Comments";
 import Link from "next/link";
 import CommentIcon from "@mui/icons-material/Comment";
+import Footer from "./Footer";
+import { formatDate, formatReadingTime } from "@/utils/dataFormatter";
+import readingTime from "reading-time";
+import { IconAndText } from "./PostCard";
+import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 
 const CONTENTS_ID = "contents"; // 목차로 이용할 ID
 
@@ -54,6 +62,10 @@ const MarkdownBody = styled(Box)`
   h3 {
     scroll-margin-top: 10px;
   }
+`;
+
+const ContentBody = styled(Box)`
+  width: min(100%, 750px);
 `;
 
 // 목차 스타일링
@@ -105,6 +117,20 @@ const ScrollPercentage = styled(Box)`
   height: 60%;
 `;
 
+const TagWrapper = styled(Box)`
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+`;
+
+const Tag = styled(Box)`
+  background-color: ${({ theme }) => theme.palette.primary.main};
+  margin: 4px;
+  padding: 8px;
+  border-radius: 4px;
+  color: white;
+`;
+
 function PostModal({ closeModal, postData }: PostModalProps) {
   const theme = useTheme();
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -112,6 +138,11 @@ function PostModal({ closeModal, postData }: PostModalProps) {
   const [scrollPercentage, setScrollPercentage] = useState(0);
   const [toc, setToc] = useState<string | null>(null);
   const [activeIds, setActiveIds] = useState<string[]>([]);
+  const { text } = readingTime(postData.content);
+  const date = new Date(postData.data.date);
+  const [dateString, setDateString] = useState<string>("");
+  const [readingTimeString, setReadingTimeString] = useState<string>("");
+  const [tagOpen, setTagOpen] = useState(false);
 
   // 창 크기 변화 감지
   useEffect(() => {
@@ -226,6 +257,11 @@ function PostModal({ closeModal, postData }: PostModalProps) {
     }
   }, [postData.compiledMdx]);
 
+  useEffect(() => {
+    setDateString(formatDate(date, postData.lang));
+    setReadingTimeString(formatReadingTime(text, postData.lang));
+  }, [postData.lang, date, text]);
+
   // 현재 보이는 섹션 추적
   useEffect(() => {
     // 각 헤딩의 "현재 보임 여부"를 기록
@@ -319,29 +355,73 @@ function PostModal({ closeModal, postData }: PostModalProps) {
             width={isWide ? "950px" : "min(100%, 1150px)"}
             className="modal-content"
           >
-            <MarkdownBody
-              className={`markdown-body ${theme.palette.mode === "dark" ? "markdown-dark" : "markdown-light"}`}
-              paddingX={isWide ? "0" : "24px"}
-            >
-              {!isWide && toc && (
-                <ReactMarkdown
-                  rehypePlugins={[rehypeRaw]}
-                  components={{
-                    h1: ({ node, ...props }) => {
-                      // id가 "contents"인 경우 렌더링하지 않음
-                      if (props.id === "contents") {
-                        return null;
-                      }
-                      return <h1 {...props} />;
-                    },
-                  }}
-                >
-                  {toc}
-                </ReactMarkdown>
+            <ContentBody paddingX={isWide ? "0" : "24px"}>
+              <Typography fontWeight={"bold"} variant="h4" paddingTop={5} paddingBottom={1}>
+                {postData.data.title}
+              </Typography>
+              <Typography variant="subtitle1" color="text.secondary" paddingBottom={1}>
+                {postData.data.description}
+              </Typography>
+              <Grid2 color="text.secondary" paddingBottom={1} display={"flex"} alignItems={"center"}>
+                <IconAndText size={"auto"} color={"text.secondary"}>
+                  <CalendarMonthOutlinedIcon fontSize="small" sx={{ marginRight: "4px" }} />
+                  <Typography fontSize={14}>{dateString}</Typography>
+                </IconAndText>
+                <Typography fontSize={14} sx={{ marginX: "8px" }}>
+                  •
+                </Typography>
+                <IconAndText size={"auto"} color={"text.secondary"}>
+                  <AccessTimeIcon fontSize="small" sx={{ marginRight: "4px" }} />
+                  <Typography fontSize={14}>{readingTimeString}</Typography>
+                </IconAndText>
+                <Grid2 size={"grow"} display={"flex"} justifyContent={"flex-end"}>
+                  <Button
+                    onClick={() => {
+                      setTagOpen(!tagOpen);
+                    }}
+                  >
+                    {tagOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+                    {postData.lang === "ko" ? "태그 보기" : !tagOpen ? "タグを見る" : "タグを閉じる"}
+                  </Button>
+                </Grid2>
+              </Grid2>
+              {tagOpen && (
+                <TagWrapper>
+                  {postData.data.tags.map((tag) => (
+                    <Tag key={tag}>{tag}</Tag>
+                  ))}
+                </TagWrapper>
               )}
-              <ReactMarkdown rehypePlugins={[rehypeRaw]}>{postData.compiledMdx}</ReactMarkdown>
-              <Comments />
-            </MarkdownBody>
+              <Divider sx={{ marginBottom: "32px" }} />
+              <MarkdownBody
+                className={`markdown-body ${theme.palette.mode === "dark" ? "markdown-dark" : "markdown-light"}`}
+              >
+                {!isWide && toc && (
+                  <>
+                    <Typography variant="h1" fontWeight={"bold"}>
+                      목차
+                    </Typography>
+                    <ReactMarkdown
+                      rehypePlugins={[rehypeRaw]}
+                      components={{
+                        h1: ({ node, ...props }) => {
+                          // id가 "contents"인 경우 렌더링하지 않음
+                          if (props.id === "contents") {
+                            return null;
+                          }
+                          return <h1 {...props} />;
+                        },
+                      }}
+                    >
+                      {toc}
+                    </ReactMarkdown>
+                  </>
+                )}
+                <ReactMarkdown rehypePlugins={[rehypeRaw]}>{postData.compiledMdx}</ReactMarkdown>
+                <Comments />
+              </MarkdownBody>
+              <Footer />
+            </ContentBody>
           </Grid2>
         ) : (
           <div>로딩 중...</div>
