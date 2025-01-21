@@ -17,6 +17,11 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
+import useCodeTheme from "@/hooks/useCodeTheme";
+import useResizeObserver from "@/hooks/useResizeObserver";
+import useScrollPercentage from "@/hooks/useScrollPercentage";
+import useExtractToc from "@/hooks/useExtractToc";
+import useActiveSections from "@/hooks/useActiveSections";
 
 const CONTENTS_ID = "contents"; // 목차로 이용할 ID
 
@@ -139,241 +144,23 @@ const Tag = styled(Box)`
 function PostModal({ closeModal, postData }: PostModalProps) {
   const theme = useTheme();
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const [isWide, setIsWide] = useState(false);
-  const [scrollPercentage, setScrollPercentage] = useState(0);
-  const [toc, setToc] = useState<string | null>(null);
-  const [activeIds, setActiveIds] = useState<string[]>([]);
+  // const [activeIds, setActiveIds] = useState<string[]>([]);
   const { text } = readingTime(postData.content);
   const date = new Date(postData.data.date);
   const [dateString, setDateString] = useState<string>("");
   const [readingTimeString, setReadingTimeString] = useState<string>("");
   const [tagOpen, setTagOpen] = useState(false);
+  const isWide = useResizeObserver(wrapperRef, 1150); // 넓이가 1150px 이상인지 여부
+  const scrollPercentage = useScrollPercentage(wrapperRef); // 현재 스크롤 비율
+  const toc = useExtractToc(postData.compiledMdx, CONTENTS_ID); // 목차 추출
+  const activeIds = useActiveSections(wrapperRef, ".markdown-body h1, .markdown-body h2, .markdown-body h3"); // 현재 보이는 섹션
 
-  // Post 내부 코드 테마 적용
-  useEffect(() => {
-    if (theme.palette.mode === "light") {
-      const styleMapping = {
-        "rgb(36, 41, 46)": { backgroundColor: "rgb(245, 245, 245)" }, // 배경색
-        "rgb(201, 209, 217)": { color: "rgb(31, 35, 40)" }, // 기본 텍스트
-        "rgb(249, 117, 131)": { color: "rgb(199, 37, 78)" }, // 키워드
-        "rgb(179, 146, 240)": { color: "rgb(136, 97, 205)" }, // 함수 이름
-        "rgb(225, 228, 232)": { color: "rgb(51, 51, 51)" }, // 기호
-        "rgb(158, 203, 255)": { color: "rgb(50, 120, 100)" }, // 문자열
-        "rgb(247, 140, 108)": { color: "rgb(41, 101, 214)" }, // 숫자
-        "rgb(106, 115, 125)": { color: "rgb(153, 153, 153)" }, // 주석
-        "rgb(255, 203, 107)": { color: "rgb(245, 124, 0)" }, // 속성
-        "rgb(84, 174, 255)": { color: "rgb(33, 150, 243)" }, // 태그
-        "rgb(240, 113, 120)": { color: "rgb(199, 94, 94)" }, // 변수
-        "rgb(129, 233, 129)": { color: "rgb(0, 92, 230)" }, // 연산자
-        // "rgb(255, 203, 107)": { color: "rgb(100, 130, 245)" }, // CSS 속성
-      };
-
-      const figureElements = document.querySelectorAll("figure");
-      figureElements.forEach((element) => {
-        const children = element.querySelectorAll("*");
-        children.forEach((child) => {
-          const computedStyle = getComputedStyle(child);
-          Object.entries(styleMapping).forEach(([key, style]) => {
-            if (computedStyle.backgroundColor === key || computedStyle.color === key) {
-              Object.assign((child as HTMLElement).style, style);
-            }
-          });
-        });
-      });
-    }
-  }, [postData.compiledMdx]); // MDX 데이터가 변경될 때만 실행
-
-  // 창 크기 변화 감지
-  useEffect(() => {
-    const wrapper = wrapperRef.current;
-
-    if (!wrapper) return;
-
-    const handleResize = () => {
-      const width = wrapper.offsetWidth;
-      setIsWide(width >= 1150); // 1150px 기준으로 상태 변경
-      console.log(width);
-      console.log(isWide);
-    };
-
-    // 초기 크기 감지
-    handleResize();
-
-    // ResizeObserver 설정
-    const observer = new ResizeObserver(handleResize);
-    observer.observe(wrapper);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
-
-  // 현재 스크롤 비율 감지
-  useEffect(() => {
-    const modalElement = wrapperRef.current;
-
-    if (!modalElement) return;
-
-    const updateHeights = () => {
-      const maxScroll = modalElement.scrollHeight - modalElement.clientHeight; // 최대 스크롤 위치
-
-      const scrollPercentage = maxScroll > 0 ? (modalElement.scrollTop / maxScroll) * 100 : 0; // 스크롤 비율 계산
-      setScrollPercentage(scrollPercentage);
-      console.log(`스크롤 비율: ${scrollPercentage}%`);
-    };
-
-    // 초기 높이 및 스크롤 위치 설정
-    updateHeights();
-
-    // ResizeObserver로 높이 변화 감지
-    const observer = new ResizeObserver(() => {
-      updateHeights();
-    });
-
-    observer.observe(modalElement);
-
-    // 스크롤 이벤트 처리
-    const handleScroll = () => {
-      updateHeights();
-    };
-
-    modalElement.addEventListener("scroll", handleScroll);
-
-    // 정리 함수
-    return () => {
-      observer.disconnect();
-      modalElement.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  // toc 추출
-  useEffect(() => {
-    const container = document.querySelector(".markdown-body");
-    if (container) {
-      const contentsHeading = container.querySelector(`h1#${CONTENTS_ID}`);
-      const tocList = container.querySelector(`h1#${CONTENTS_ID} + ul`);
-      if (contentsHeading && tocList) {
-        // h1#contents + ul 통째로 추출
-        const combinedHTML = contentsHeading.outerHTML + tocList.outerHTML;
-
-        let ulCount = 0;
-
-        // <ul>, </ul>, <a...>, </a> 각각을 정규식으로 구분
-        // (기존 코드: /<\/?ul[^>]*>|<a[^>]*>|<\/a>/gi)
-        // 여기서 <a([^>]*)> 식으로 캡처 그룹을 사용해
-        // 기존 속성을 $1로 보존
-        const parsed = combinedHTML.replace(/<ul[^>]*>|<\/ul>|<a([^>]*)>|<\/a>/gi, (match, aAttributes) => {
-          // 소문자로 비교
-          const tag = match.toLowerCase();
-
-          if (tag.startsWith("<ul") && !tag.startsWith("</ul")) {
-            // 열리는 <ul ...>
-            ulCount++;
-            return match; // 그대로 반환
-          } else if (tag.startsWith("</ul")) {
-            // 닫는 </ul>
-            ulCount--;
-            return match; // 그대로 반환
-          } else if (tag.startsWith("<a")) {
-            // a 태그 시작
-            // aAttributes = " href="#..." class="..." 등
-            const paddingValue = ulCount * 8;
-            // 주의: 기존 style=""이 있으면 덮어쓰는 예시 (병합은 별도 로직 필요)
-            return `<a${aAttributes} style="padding-left:${paddingValue}px;">`;
-          } else if (tag.startsWith("</a")) {
-            return "</a>";
-          }
-
-          return match; // 나머지는 변경 없이 반환
-        });
-
-        setToc(parsed);
-
-        // 원본 DOM에서 제거
-        contentsHeading.remove();
-        tocList.remove();
-      }
-    }
-  }, [postData.compiledMdx]);
+  useCodeTheme(theme.palette.mode);
 
   useEffect(() => {
     setDateString(formatDate(date, postData.lang));
     setReadingTimeString(formatReadingTime(text, postData.lang));
   }, [postData.lang, date, text]);
-
-  // 현재 보이는 섹션 추적
-  useEffect(() => {
-    // 각 헤딩의 "현재 보임 여부"를 기록
-    const visibilityMap = new Map<string, boolean>();
-    const activeSet = new Set<string>();
-    const allSections = Array.from(
-      document.querySelectorAll(".markdown-body h1, .markdown-body h2, .markdown-body h3")
-    );
-    let lastActiveId: string | null = null;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        let isChange = false;
-
-        entries.forEach((entry) => {
-          const id = entry.target.getAttribute("id") || "";
-
-          if (entry.isIntersecting) {
-            visibilityMap.set(id, true);
-            if (!activeSet.has(id)) {
-              isChange = true;
-            }
-          } else {
-            visibilityMap.set(id, false);
-            isChange = true;
-          }
-        });
-
-        if (isChange) {
-          visibilityMap.forEach((isVisible, id) => {
-            if (isVisible) {
-              activeSet.add(id);
-              lastActiveId = id; // 마지막으로 활성화된 ID를 업데이트
-            } else {
-              activeSet.delete(id);
-            }
-          });
-
-          if (activeSet.size === 0 && lastActiveId) {
-            // 현재 보이는 섹션이 없을 때
-            const direction =
-              (entries.find((entry) => entry.target.getAttribute("id") === lastActiveId)?.boundingClientRect.top ?? 0) <
-              0
-                ? "up"
-                : "down";
-
-            const lastIndex = allSections.findIndex((section) => section.getAttribute("id") === lastActiveId);
-            if (direction === "up") {
-              // 위로 사라졌으면 해당 항목을 활성화
-              setActiveIds([lastActiveId]);
-            } else if (direction === "down" && lastIndex > 0) {
-              // 아래로 사라졌으면 바로 위 항목을 활성화
-              const previousSection = allSections[lastIndex - 1];
-              const previousId = previousSection?.getAttribute("id");
-              setActiveIds([previousId || ""]);
-            }
-          } else {
-            setActiveIds(Array.from(activeSet));
-          }
-        }
-      },
-      {
-        root: wrapperRef.current, // 모달 내부를 기준
-        threshold: 0.1,
-      }
-    );
-
-    // 관찰 대상 지정
-    const sections = document.querySelectorAll(".markdown-body h1, .markdown-body h2, .markdown-body h3");
-    sections.forEach((section) => observer.observe(section));
-
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <>
