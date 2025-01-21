@@ -44,7 +44,7 @@ const fetchPosts = async (lang: string, series: string, tagsCount: Record<string
         .use(remarkParse)
         .use(remarkRehype)
         .use(rehypeSanitize)
-        .use(rehypePrettyCode, { theme: "material-theme" })
+        .use(rehypePrettyCode, { theme: "github-dark" })
         .use(rehypeStringify)
         .use(rehypeSlug)
         .process(content.content);
