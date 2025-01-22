@@ -1,43 +1,27 @@
 import Comments from "@/app/components/Comments";
 import { Box, Button } from "@mui/material";
-import matter from "gray-matter";
 
-async function getPost(lang: string, id: string) {
-  const response = await fetch(`${process.env.GITHUB_API_URL}/${lang}/${id}.mdx`, {
-    headers: {
-      Authorization: `token ${process.env.GITHUB_API_TOKEN}`,
-    },
-  });
+import { fetchPostAndCompileMdx } from "@/app/api/route";
+import MarkdownBody from "@/app/components/MarkdownBody";
 
-  if (!response.ok) return null;
+export default async function PostPage({ params }: { params: { lang: string; series: string; id: string } }) {
+  const { lang, series, id } = params;
+  console.log(lang, series, id);
 
-  const encodedContent = await response.json();
-  const content = Buffer.from(encodedContent.content, "base64").toString("utf-8");
-  const post = matter(content);
+  const { data, compiledMdx, readingTime } = await fetchPostAndCompileMdx(series, id, lang, {});
 
-  return post;
-}
-
-export default async function PostPage({ params }: { params: { lang: string; id: string } }) {
-  const { lang, id } = params;
-  const post = await getPost(lang, id);
-
-  if (!post) {
+  if (!data) {
     return (
       <>
         <Button color="secondary">fdas</Button>
         <div>게시물이 존재하지 않습니다.</div>
-        <Comments />
       </>
     );
   }
 
   return (
-    <div>
-      <Button>fdas</Button>
-      <h1>{post.data.title}</h1>
-      <article>{post.content}</article>
-      <Comments />
-    </div>
+    <Box display={"flex"} justifyContent={"center"} position={"relative"} overflow={"visible"}>
+      <MarkdownBody compiledMdx={compiledMdx} data={data} lang={lang} readingTime={readingTime} />
+    </Box>
   );
 }
