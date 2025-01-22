@@ -1,4 +1,4 @@
-import { getPostsSepSeries } from "../api/[lang]/posts/route";
+import { getPostsSepSeries } from "../api/route";
 import FilterTags from "../components/FiterTags";
 import serializePosts from "@/utils/serializedPosts";
 

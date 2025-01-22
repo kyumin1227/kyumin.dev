@@ -9,6 +9,7 @@ interface iPost {
   excerpt: string;
   lang: string;
   compiledMdx: any;
+  readingTime: string;
 }
 
 /**
