@@ -2,7 +2,6 @@
 
 import { Grid2, Link, Typography, useTheme } from "@mui/material";
 import ThemeSwitch from "./ThemeSwitch";
-import { Playfair_Display } from "next/font/google";
 import LanguageSwitch from "./LanguageSwitch";
 import MotionGitHubIcon from "./MotionGitHub";
 import { useEffect, useState } from "react";

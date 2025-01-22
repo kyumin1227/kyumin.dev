@@ -70,7 +70,7 @@ const MarkdownBody = styled(Box)`
   }
 `;
 
-const ContentBody = styled(Box)`
+export const ContentBody = styled(Box)`
   width: min(100%, 750px);
 `;
 
@@ -127,13 +127,13 @@ const ScrollPercentage = styled(Box)`
   height: 80%;
 `;
 
-const TagWrapper = styled(Box)`
+export const TagWrapper = styled(Box)`
   display: flex;
   flex-wrap: wrap;
   margin-bottom: 16px;
 `;
 
-const Tag = styled(Box)`
+export const Tag = styled(Box)`
   background-color: ${({ theme }) => theme.palette.primary.main};
   margin: 4px;
   padding: 8px;
@@ -153,7 +153,7 @@ function PostModal({ closeModal, postData }: PostModalProps) {
   const isWide = useResizeObserver(wrapperRef, 1150); // 넓이가 1150px 이상인지 여부
   const scrollPercentage = useScrollPercentage(wrapperRef); // 현재 스크롤 비율
   const toc = useExtractToc(postData.compiledMdx, CONTENTS_ID); // 목차 추출
-  const activeIds = useActiveSections(wrapperRef, ".markdown-body h1, .markdown-body h2, .markdown-body h3"); // 현재 보이는 섹션
+  const activeIds = useActiveSections(".markdown-body h1, .markdown-body h2, .markdown-body h3"); // 현재 보이는 섹션
 
   useCodeTheme(theme.palette.mode);
 

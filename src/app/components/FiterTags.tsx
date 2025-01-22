@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, styled, useTheme } from "@mui/material";
+import { Box, styled, useTheme } from "@mui/material";
 import React, { useState } from "react";
 import PostList from "./PostList";
 import Tag from "./Tag";

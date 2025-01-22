@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
  * @param sectionSelector
  * @returns
  */
-const useActiveSections = (ref: React.RefObject<HTMLElement>, sectionSelector: string) => {
+const useActiveSections = (sectionSelector: string) => {
   const [activeIds, setActiveIds] = useState<string[]>([]);
 
   // 현재 보이는 섹션 추적
@@ -52,7 +52,7 @@ const useActiveSections = (ref: React.RefObject<HTMLElement>, sectionSelector: s
         }
       },
       {
-        root: ref.current, // 모달 내부를 기준
+        root: null, // 모달 내부를 기준
         threshold: 0.1,
       }
     );

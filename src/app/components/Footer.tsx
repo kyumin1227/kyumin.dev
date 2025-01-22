@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Link, SvgIcon, Typography, useTheme } from "@mui/material";
+import { Box, Link, Typography, useTheme } from "@mui/material";
 
 const Footer = () => {
   const theme = useTheme();

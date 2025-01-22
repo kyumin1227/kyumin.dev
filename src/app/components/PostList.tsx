@@ -21,13 +21,10 @@ const PostList = ({ posts, lang }: { posts: iPost[]; lang: string }) => {
       setIsModalOpen(true);
       const selectedPost = posts.find((post: any) => post.path === `${match[1]}/${match[2]}`);
       setModalPost(selectedPost);
-      console.log("match true");
-      console.log(`${match[1]}/${match[2]}`);
       document.body.style.overflow = "hidden";
     } else {
       setIsModalOpen(false);
       setModalPost(null);
-      console.log("match false");
       document.body.style.overflow = "auto";
     }
   }, [pathname]);
