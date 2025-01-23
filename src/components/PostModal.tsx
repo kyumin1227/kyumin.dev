@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
-import "github-markdown-css/github-markdown.css"; // 기존 모듈 수정 필요 (색상 선택을 위한 클래스 추가 및 조건 변경)
+import "../styles/github-markdown.css"; // 기존 모듈 수정 필요 (색상 선택을 위한 클래스 추가 및 조건 변경)
 import Comments from "./Comments";
 import Link from "next/link";
 import CommentIcon from "@mui/icons-material/Comment";
