@@ -1,5 +1,5 @@
 import { getPostsSepSeries } from "../api/getPosts";
-import FilterTags from "../components/FiterTags";
+import FilterTags from "../../components/FiterTags";
 import serializePosts from "@/utils/serializedPosts";
 
 const getPosts = async (lang: string) => {

@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import Header from "./components/Header";
+import Header from "../components/Header";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { Box, Container } from "@mui/material";
 import "../styles/reset.css";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "../styles/theme";
 import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
-import Footer from "./components/Footer";
+import Footer from "../components/Footer";
 
 export const metadata: Metadata = {
   title: "Kyumin.dev",

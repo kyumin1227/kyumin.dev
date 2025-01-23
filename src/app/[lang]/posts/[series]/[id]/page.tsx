@@ -1,7 +1,7 @@
 import { Box, Button } from "@mui/material";
 
 import { fetchPostAndCompileMdx } from "@/app/api/getPosts";
-import MarkdownBody from "@/app/components/MarkdownBody";
+import MarkdownBody from "@/components/MarkdownBody";
 
 export default async function PostPage({ params }: { params: Promise<{ lang: string; series: string; id: string }> }) {
   const { lang, series, id } = await params;
