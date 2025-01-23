@@ -84,7 +84,6 @@ const MarkdownBody = ({
   lang: string;
   readingTime: string;
 }) => {
-  console.log(typeof compiledMdx);
   const date = new Date(data.date);
   const theme = useTheme();
   const [tagOpen, setTagOpen] = useState(false);

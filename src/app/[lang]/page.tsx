@@ -11,14 +11,11 @@ export default async function PostsPage({ params }: { params: Promise<{ lang: st
   const { lang } = await params;
   const { posts, tags } = await getPosts(lang);
 
-  console.log(posts);
-  console.log(tags);
-
   const postDatas = serializePosts(posts);
 
   return (
-    <div>
+    <>
       <FilterTags tags={tags} lang={lang} postDatas={postDatas} />
-    </div>
+    </>
   );
 }

@@ -24,7 +24,7 @@ export const fetchPostAndCompileMdx = async (
     },
   });
 
-  const encodedMdx = await data.json();
+  const encodedMdx: iPost = await data.json();
 
   console.log(encodedMdx);
 

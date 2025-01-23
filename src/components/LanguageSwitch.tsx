@@ -10,8 +10,6 @@ const MotionSvgIcon = motion(SvgIcon);
 const LanguageSwitch = () => {
   const { lang } = useParams();
 
-  console.log(lang);
-
   if (lang === "ko") {
     return (
       <Link href="/ja">

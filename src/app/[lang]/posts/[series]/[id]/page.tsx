@@ -3,6 +3,20 @@ import { Box, Button } from "@mui/material";
 import { fetchPostAndCompileMdx } from "@/app/api/getPosts";
 import MarkdownBody from "@/components/MarkdownBody";
 
+export async function generateMetadata({ params }: { params: Promise<{ lang: string; series: string; id: string }> }) {
+  const { lang, series, id } = await params;
+
+  const { data }: { data: iData } = await fetchPostAndCompileMdx(series, id, lang, {});
+
+  return {
+    title: data.title,
+    description: data.description,
+    date: data.date,
+    tags: data.tags.join(", "),
+    lang,
+  };
+}
+
 export default async function PostPage({ params }: { params: Promise<{ lang: string; series: string; id: string }> }) {
   const { lang, series, id } = await params;
   console.log(lang, series, id);
