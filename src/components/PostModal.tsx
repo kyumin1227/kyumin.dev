@@ -72,7 +72,6 @@ const MarkdownBody = styled(Box)`
 
 export const ContentBody = styled(Box)`
   width: min(100%, 750px);
-  overflow-x: hidden;
 `;
 
 // 목차 스타일링
