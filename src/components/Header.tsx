@@ -5,11 +5,14 @@ import ThemeSwitch from "./ThemeSwitch";
 import LanguageSwitch from "./LanguageSwitch";
 import MotionGitHubIcon from "./MotionGitHub";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 const Header = () => {
   const theme = useTheme();
+  const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(true); // 헤더 보임 상태
   const [lastScrollY, setLastScrollY] = useState(0); // 마지막 스크롤 위치
+  const [language, setLanguage] = useState("ja"); // 언어
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,6 +36,17 @@ const Header = () => {
     };
   }, [lastScrollY]);
 
+  useEffect(() => {
+    // 루트 바로 다음의 값을 가져옴
+    const pathSegments = pathname.split("/"); // 경로를 '/'로 분리
+    if (pathSegments.length > 1) {
+      const lang = pathSegments[1]; // 루트 바로 다음 값
+      if (lang === "ko" || lang === "ja") {
+        setLanguage(lang);
+      }
+    }
+  }, [pathname]); // 경로가 변경될 때마다 실행
+
   return (
     <Grid2
       width={"100%"}
@@ -53,7 +67,7 @@ const Header = () => {
       <Grid2 container width={"100%"} maxWidth="xl" padding={1}>
         <Grid2 size="auto" display={"flex"} alignItems={"center"} marginLeft={1}>
           <Typography variant="h5">
-            <Link href={"/"} sx={{ textDecoration: "none" }}>
+            <Link href={`/${language}`} sx={{ textDecoration: "none" }}>
               Kyumin.dev
             </Link>
           </Typography>

@@ -24,7 +24,7 @@ export default function RootLayout({
         <InitColorSchemeScript attribute="class" />
         <ThemeProvider theme={theme}>
           <AppRouterCacheProvider>
-            <Box sx={{ width: "100vw", height: "100vh", display: "flex", justifyContent: "center" }}>
+            <Box sx={{ width: "100%", height: "100%", display: "flex", justifyContent: "center" }}>
               <Container maxWidth="xl">
                 <Header />
                 <Box mt={"92px"}>{children}</Box>
