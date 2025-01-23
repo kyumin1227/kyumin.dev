@@ -23,10 +23,10 @@ const useActiveSections = (sectionSelector: string) => {
           if (entry.isIntersecting) {
             // 해당 엔트리가 보이는 경우
             activeSet.add(id);
-            lastActiveId = id;
           } else {
             // 해당 엔트리가 보이지 않는 경우
             activeSet.delete(id);
+            lastActiveId = id;
           }
         });
 
