@@ -1,11 +1,10 @@
-import Comments from "@/app/components/Comments";
 import { Box, Button } from "@mui/material";
 
-import { fetchPostAndCompileMdx } from "@/app/api/route";
+import { fetchPostAndCompileMdx } from "@/app/api/getPosts";
 import MarkdownBody from "@/app/components/MarkdownBody";
 
-export default async function PostPage({ params }: { params: { lang: string; series: string; id: string } }) {
-  const { lang, series, id } = params;
+export default async function PostPage({ params }: { params: Promise<{ lang: string; series: string; id: string }> }) {
+  const { lang, series, id } = await params;
   console.log(lang, series, id);
 
   const { data, compiledMdx, readingTime } = await fetchPostAndCompileMdx(series, id, lang, {});

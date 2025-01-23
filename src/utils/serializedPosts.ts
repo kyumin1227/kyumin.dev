@@ -14,6 +14,7 @@ const serializePosts = (data: iPostsSepSeries[]): iPost[] => {
       excerpt: post.excerpt,
       lang: post.lang,
       compiledMdx: post.compiledMdx,
+      readingTime: post.readingTime,
     }))
   );
 

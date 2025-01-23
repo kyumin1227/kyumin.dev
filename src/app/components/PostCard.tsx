@@ -7,6 +7,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import readingTime from "reading-time";
 import { useEffect, useRef, useState } from "react";
 import { formatDate, formatReadingTime } from "@/utils/dataFormatter";
+import Image from "next/image";
 
 interface PostCardProps {
   data: iPost;
@@ -148,7 +149,6 @@ const PostCard = ({ data, modalFunc }: PostCardProps) => {
   const date = new Date(data.data.date);
   const [dateString, setDateString] = useState<string>("");
   const [readingTimeString, setReadingTimeString] = useState<string>("");
-  const theme = useTheme();
 
   useEffect(() => {
     setDateString(formatDate(date, data.lang));
@@ -167,8 +167,13 @@ const PostCard = ({ data, modalFunc }: PostCardProps) => {
         direction={"column"}
       >
         <ImgWrapper size="grow">
-          <img src="https://www.sanrio.co.jp/wp-content/uploads/2022/06/gallery-cogimyun5.png" alt="Image Text" />
-          {/* <img src={data.data.coverImage} alt="CoverImage" /> */}
+          {/* <Image
+            src="https://www.sanrio.co.jp/wp-content/uploads/2022/06/gallery-cogimyun5.png"
+            alt="Image Text"
+            width={500}
+            height={500}
+          /> */}
+          <Image src={data.data.coverImage} alt="CoverImage" width={500} height={500} />
         </ImgWrapper>
         <TextWrapper size="auto" width={"100%"}>
           <TitleTypography fontSize={22}>{data.data.title}</TitleTypography>

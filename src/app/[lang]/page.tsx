@@ -1,4 +1,4 @@
-import { getPostsSepSeries } from "../api/route";
+import { getPostsSepSeries } from "../api/getPosts";
 import FilterTags from "../components/FiterTags";
 import serializePosts from "@/utils/serializedPosts";
 
@@ -7,8 +7,8 @@ const getPosts = async (lang: string) => {
   return { posts, tags };
 };
 
-export default async function PostsPage({ params }: { params: { lang: string } }) {
-  const { lang } = params;
+export default async function PostsPage({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
   const { posts, tags } = await getPosts(lang);
 
   console.log(posts);
