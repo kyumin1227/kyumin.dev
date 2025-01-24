@@ -4,6 +4,7 @@ import { Box, Button, Divider, Grid2, Link, styled, Typography, useTheme } from 
 import Comments from "./Comments";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import "github-markdown-css";
 import "../styles/github-markdown.css"; // 기존 모듈 수정 필요 (색상 선택을 위한 클래스 추가 및 조건 변경)
 import useCodeTheme from "@/hooks/useCodeTheme";
 import { useEffect, useState } from "react";
