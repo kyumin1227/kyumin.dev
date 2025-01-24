@@ -167,12 +167,6 @@ const PostCard = ({ data, modalFunc }: PostCardProps) => {
         direction={"column"}
       >
         <ImgWrapper size="grow">
-          {/* <Image
-            src="https://www.sanrio.co.jp/wp-content/uploads/2022/06/gallery-cogimyun5.png"
-            alt="Image Text"
-            width={500}
-            height={500}
-          /> */}
           <Image src={data.data.coverImage} alt="CoverImage" width={500} height={500} />
         </ImgWrapper>
         <TextWrapper size="auto" width={"100%"}>

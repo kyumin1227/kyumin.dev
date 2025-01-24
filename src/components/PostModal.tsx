@@ -23,6 +23,7 @@ import useResizeObserver from "@/hooks/useResizeObserver";
 import useScrollPercentage from "@/hooks/useScrollPercentage";
 import useExtractToc from "@/hooks/useExtractToc";
 import useActiveSections from "@/hooks/useActiveSections";
+import useViewportHeight from "@/hooks/useViewportHeight";
 
 const CONTENTS_ID = "contents"; // 목차로 이용할 ID
 
@@ -39,7 +40,6 @@ const ModalWrapper = styled(motion(Grid2))`
   right: 0;
   margin: auto auto;
   padding-top: 10px;
-  max-height: 94vh;
   width: min(94vw, 1200px);
   border: 2px solid ${({ theme }) => theme.palette.divider};
   border-radius: 10px;
@@ -73,6 +73,7 @@ const MarkdownBody = styled(Box)`
 
 export const ContentBody = styled(Box)`
   width: min(100%, 750px);
+  box-sizing: border-box;
 `;
 
 // 목차 스타일링
@@ -145,7 +146,6 @@ export const Tag = styled(Box)`
 function PostModal({ closeModal, postData }: PostModalProps) {
   const theme = useTheme();
   const wrapperRef = useRef<HTMLDivElement>(null);
-  // const [activeIds, setActiveIds] = useState<string[]>([]);
   const { text } = readingTime(postData.content);
   const date = new Date(postData.data.date);
   const [dateString, setDateString] = useState<string>("");
@@ -155,6 +155,7 @@ function PostModal({ closeModal, postData }: PostModalProps) {
   const scrollPercentage = useScrollPercentage(wrapperRef); // 현재 스크롤 비율
   const toc = useExtractToc(postData.compiledMdx, CONTENTS_ID); // 목차 추출
   const activeIds = useActiveSections(".markdown-body h1, .markdown-body h2, .markdown-body h3"); // 현재 보이는 섹션
+  const viewportHeight = useViewportHeight();
 
   useCodeTheme(theme.palette.mode);
 
@@ -169,7 +170,10 @@ function PostModal({ closeModal, postData }: PostModalProps) {
         layoutId={`${postData.path}`}
         className="modal"
         ref={wrapperRef}
-        sx={{ backgroundColor: theme.palette.mode === "dark" ? "#0d1117" : "#ffffff" }}
+        sx={{
+          backgroundColor: theme.palette.mode === "dark" ? "#0d1117" : "#ffffff",
+          maxHeight: `calc(${viewportHeight}px - 6vh)`,
+        }}
         position="relative"
       >
         <ScrollPercentageWrapper>
