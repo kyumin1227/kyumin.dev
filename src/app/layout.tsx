@@ -7,12 +7,15 @@ import { ThemeProvider } from "@mui/material/styles";
 import theme from "../styles/theme";
 import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
 import Footer from "../components/Footer";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 export const metadata: Metadata = {
   title: "Kyumin.dev",
   description: "개발, 기술, 프로그래밍, 취미 등 다양한 주제로 글을 쓰는 김규민의 블로그입니다.",
   authors: [{ name: "Kyumin Kim" }],
 };
+
+const gaId: string = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || "";
 
 export default function RootLayout({
   children,
@@ -34,6 +37,7 @@ export default function RootLayout({
             </Box>
           </AppRouterCacheProvider>
         </ThemeProvider>
+        <GoogleAnalytics gaId={gaId} />
       </body>
     </html>
   );
