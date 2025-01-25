@@ -13,6 +13,7 @@ const Header = () => {
   const [isVisible, setIsVisible] = useState(true); // 헤더 보임 상태
   const [lastScrollY, setLastScrollY] = useState(0); // 마지막 스크롤 위치
   const [language, setLanguage] = useState("ja"); // 언어
+  const [path, setPath] = useState("");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,6 +44,9 @@ const Header = () => {
       const lang = pathSegments[1]; // 루트 바로 다음 값
       if (lang === "ko" || lang === "ja") {
         setLanguage(lang);
+
+        const postPath = pathSegments.slice(2).join("/");
+        setPath(postPath);
       }
     }
   }, [pathname]); // 경로가 변경될 때마다 실행
@@ -74,7 +78,7 @@ const Header = () => {
         </Grid2>
         <Grid2 size="grow"></Grid2>
         <Grid2 size="auto" padding={2}>
-          <LanguageSwitch />
+          <LanguageSwitch language={language} path={path} />
         </Grid2>
         <Grid2 size="auto" padding={2}>
           <ThemeSwitch />
