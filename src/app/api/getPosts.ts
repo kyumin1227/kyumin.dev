@@ -12,22 +12,27 @@ import readingTime from "reading-time";
 const GITHUB_API_URL = process.env.GITHUB_API_URL;
 const GITHUB_API_TOKEN = process.env.GITHUB_API_TOKEN;
 
+const cache = new Map<string, any>(); // 메모리 캐시
+
 export const fetchPostAndCompileMdx = async (
   series: string,
   post: string,
   lang: string,
   tagsCount?: Record<string, number> | null
 ): Promise<{ content: any; path: string; compiledMdx: any; data: any; lang: string; readingTime: string }> => {
+  const cacheKey = `${series}_${post}_${lang}`; // 캐시 키 생성
+  if (cache.has(cacheKey)) {
+    console.log(`Cache hit for key: ${cacheKey}`);
+    return cache.get(cacheKey); // 캐시에서 반환
+  }
+
   const data = await fetch(`${GITHUB_API_URL}/${series}/${post}_${lang}.mdx`, {
     headers: {
       Authorization: `token ${GITHUB_API_TOKEN}`,
     },
   });
 
-  const encodedMdx: iPost = await data.json();
-
-  console.log(encodedMdx);
-
+  const encodedMdx = await data.json();
   const mdx = Buffer.from(encodedMdx.content, "base64").toString("utf-8");
   const content = matter(mdx);
 
@@ -43,22 +48,16 @@ export const fetchPostAndCompileMdx = async (
 
   const { text } = readingTime(content.content);
 
-  if (tagsCount) {
-    // tags가 있는 경우 태그 추출 및 개수 증가
-    if (content.data.tags && Array.isArray(content.data.tags)) {
-      content.data.tags.forEach((tag: string) => {
-        tagsCount[tag] = (tagsCount[tag] || 0) + 1; // 태그 개수 증가
-      });
-    }
-  }
-
-  return {
+  const result = {
     ...(({ orig, ...rest }) => rest)(content),
     lang,
     path: `${series}/${post}`,
     compiledMdx: String(compiledMdx),
     readingTime: text,
   };
+
+  cache.set(cacheKey, result); // 캐시에 저장
+  return result;
 };
 
 const fetchPosts = async (lang: string, series: string, tagsCount: Record<string, number>) => {
