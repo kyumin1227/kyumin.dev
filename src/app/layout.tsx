@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: "Kyumin.dev",
   description: "개발, 기술, 프로그래밍, 취미 등 다양한 주제로 글을 쓰는 김규민의 블로그입니다.",
   authors: [{ name: "Kyumin Kim" }],
+  keywords: ["개발", "프로그래밍", "React", "Next.js", "블로그"],
 };
 
 const gaId: string = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || "";

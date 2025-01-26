@@ -17,5 +17,10 @@ export default function Home() {
     router.push(langRoute);
   }, [router]);
 
-  return <div>리다이렉트 중...</div>;
+  return (
+    <>
+      <div>使用者の言語を確認しています...</div>
+      <div>사용자의 언어를 확인 중 입니다...</div>
+    </>
+  );
 }
