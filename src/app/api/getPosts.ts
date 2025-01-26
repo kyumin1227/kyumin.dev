@@ -14,16 +14,28 @@ const GITHUB_API_TOKEN = process.env.GITHUB_API_TOKEN;
 
 const cache = new Map<string, any>(); // 메모리 캐시
 
+const appendTags = (tagsCount: Record<string, number>, tags: string[]) => {
+  tags.forEach((tag: string) => {
+    tagsCount[tag] = (tagsCount[tag] || 0) + 1; // 태그 개수 증가
+  });
+};
+
 export const fetchPostAndCompileMdx = async (
   series: string,
   post: string,
   lang: string,
   tagsCount?: Record<string, number> | null
 ): Promise<{ content: any; path: string; compiledMdx: any; data: any; lang: string; readingTime: string }> => {
-  const cacheKey = `${series}_${post}_${lang}`; // 캐시 키 생성
-  if (cache.has(cacheKey)) {
-    console.log(`Cache hit for key: ${cacheKey}`);
-    return cache.get(cacheKey); // 캐시에서 반환
+  const cacheName = `${series}_${post}_${lang}`;
+
+  if (cache.has(cacheName)) {
+    const data = cache.get(cacheName);
+    console.log(data);
+
+    if (tagsCount) {
+      appendTags(tagsCount, data.data.tags);
+    }
+    return data;
   }
 
   const data = await fetch(`${GITHUB_API_URL}/${series}/${post}_${lang}.mdx`, {
@@ -32,7 +44,8 @@ export const fetchPostAndCompileMdx = async (
     },
   });
 
-  const encodedMdx = await data.json();
+  const encodedMdx: iPost = await data.json();
+  console.log(encodedMdx);
   const mdx = Buffer.from(encodedMdx.content, "base64").toString("utf-8");
   const content = matter(mdx);
 
@@ -48,16 +61,25 @@ export const fetchPostAndCompileMdx = async (
 
   const { text } = readingTime(content.content);
 
-  const result = {
+  if (tagsCount) {
+    appendTags(tagsCount, content.data.tags);
+  }
+
+  cache.set(cacheName, {
+    ...(({ orig, ...rest }) => rest)(content),
+    lang,
+    path: `${series}/${post}`,
+    compiledMdx: String(compiledMdx),
+    readingTime: text,
+  });
+
+  return {
     ...(({ orig, ...rest }) => rest)(content),
     lang,
     path: `${series}/${post}`,
     compiledMdx: String(compiledMdx),
     readingTime: text,
   };
-
-  cache.set(cacheKey, result); // 캐시에 저장
-  return result;
 };
 
 const fetchPosts = async (lang: string, series: string, tagsCount: Record<string, number>) => {
@@ -100,6 +122,13 @@ const fetchPosts = async (lang: string, series: string, tagsCount: Record<string
  * @returns
  */
 export const getPostsSepSeries = async (lang: string) => {
+  const cacheName = `allPosts_${lang}`;
+
+  if (cache.has(cacheName)) {
+    console.log("get cache");
+    return cache.get(cacheName);
+  }
+
   if (!GITHUB_API_URL) {
     throw new Error("GITHUB_API_URL is not defined");
   }
@@ -122,6 +151,8 @@ export const getPostsSepSeries = async (lang: string) => {
       return { series: series.name, posts: postDatas }; // 시리즈명과 글 데이터를 객체로 반환
     })
   );
+
+  cache.set(`allPosts_${lang}`, { posts, tags: tagsCount });
 
   return { posts, tags: tagsCount }; // 모든 시리즈 데이터를 포함한 배열 반환
 };
