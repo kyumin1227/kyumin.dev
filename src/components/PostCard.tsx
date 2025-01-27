@@ -1,13 +1,15 @@
 "use client";
 
-import { Box, Grid2, styled, Typography, useTheme } from "@mui/material";
+import { Box, Grid2, styled, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import readingTime from "reading-time";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { formatDate, formatReadingTime } from "@/utils/dataFormatter";
 import Image from "next/image";
+import DynamicTagContainer from "./DynamicTagContainer";
+import zIndex from "@mui/material/styles/zIndex";
 
 interface PostCardProps {
   data: iPost;
@@ -41,24 +43,6 @@ const TextWrapper = styled(Grid2)`
   object-fit: cover;
 `;
 
-const TagWrapper = styled(Box)`
-  display: flex;
-  flex-wrap: wrap;
-  overflow: hidden;
-  position: relative;
-`;
-
-const OverflowIndicator = styled(Box)`
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  padding: 0.2rem 0.5rem;
-  font-size: 0.9rem;
-  font-weight: bold;
-  color: gray;
-  pointer-events: none; /* 클릭 불가능 처리 */
-`;
-
 export const IconAndText = styled(Grid2)`
   display: flex;
   align-items: "center";
@@ -72,7 +56,7 @@ const TitleTypography = styled(Typography)`
 
 const MAX_TAG_LENGTH = 20;
 
-const Tag = ({ tag }: { tag: string }) => {
+export const Tag = ({ tag }: { tag: string }) => {
   // MAX_TAG_LENGTH를 초과하면 ...을 붙여서 표시
   const truncatedTag = tag.length > MAX_TAG_LENGTH ? `${tag.slice(0, MAX_TAG_LENGTH)}...` : tag;
 
@@ -96,59 +80,13 @@ const Tag = ({ tag }: { tag: string }) => {
   );
 };
 
-const DynamicTagContainer = ({ tags }: { tags: string[] }) => {
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const [visibleTags, setVisibleTags] = useState<string[]>([]);
-  const [hiddenTagCount, setHiddenTagCount] = useState(0);
-
-  useEffect(() => {
-    const wrapperElement = wrapperRef.current;
-
-    const calculateVisibleTags = () => {
-      const wrapperWidth = wrapperElement?.getBoundingClientRect().width || 0;
-
-      let currentWidth = 0;
-      const visible: string[] = [];
-      let hidden = 0;
-
-      tags.forEach((tag) => {
-        const tagWidth = tag.length * 14 + 24;
-        if (currentWidth + tagWidth <= wrapperWidth - 22) {
-          visible.push(tag);
-          currentWidth += tagWidth;
-        } else {
-          hidden++;
-        }
-      });
-
-      setVisibleTags(visible);
-      setHiddenTagCount(hidden);
-    };
-
-    const observer = new ResizeObserver(calculateVisibleTags);
-    if (wrapperElement) observer.observe(wrapperElement);
-
-    calculateVisibleTags();
-
-    return () => observer.disconnect();
-  }, [tags]);
-
-  return (
-    <TagWrapper ref={wrapperRef}>
-      {visibleTags.map((tag) => (
-        <Tag key={tag} tag={tag} />
-      ))}
-      {hiddenTagCount > 0 && <OverflowIndicator>+{hiddenTagCount}</OverflowIndicator>}
-    </TagWrapper>
-  );
-};
-
 const PostCard = ({ data, modalFunc }: PostCardProps) => {
   const tags = data.data.tags;
   const { text } = readingTime(data.content);
   const date = new Date(data.data.date);
   const [dateString, setDateString] = useState<string>("");
   const [readingTimeString, setReadingTimeString] = useState<string>("");
+  const [isAnimation, setIsAnimation] = useState<boolean>(false);
 
   useEffect(() => {
     setDateString(formatDate(date, data.lang));
@@ -165,6 +103,9 @@ const PostCard = ({ data, modalFunc }: PostCardProps) => {
         onClick={() => modalFunc(data.path)}
         whileHover={{ scale: 1.05 }}
         direction={"column"}
+        zIndex={isAnimation ? zIndex.modal : 0}
+        onAnimationStart={() => setIsAnimation(true)}
+        onLayoutAnimationComplete={() => setIsAnimation(false)}
       >
         <ImgWrapper size="grow">
           <Image src={data.data.coverImage} alt="CoverImage" width={500} height={500} />
