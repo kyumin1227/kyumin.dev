@@ -42,8 +42,8 @@ const PostList = ({ posts, lang }: { posts: iPost[]; lang: string }) => {
   return (
     <>
       <Grid2 container spacing={5}>
-        {posts.map((post: iPost) => (
-          <React.Fragment key={post.path}>
+        {posts.map((post: iPost, index: number) => (
+          <React.Fragment key={`${post.path}_${index}`}>
             <PostCard data={post} modalFunc={openModal} />
           </React.Fragment>
         ))}
@@ -51,11 +51,9 @@ const PostList = ({ posts, lang }: { posts: iPost[]; lang: string }) => {
 
       {isModalOpen && modalPost && (
         <>
-          <AnimatePresence>
-            <MotionModal open={isModalOpen} onClose={closeModal}>
-              <PostModal postData={modalPost} closeModal={closeModal} />
-            </MotionModal>
-          </AnimatePresence>
+          <MotionModal open={isModalOpen} onClose={closeModal} style={{ zIndex: 9999 }}>
+            <PostModal postData={modalPost} closeModal={closeModal} />
+          </MotionModal>
         </>
       )}
     </>

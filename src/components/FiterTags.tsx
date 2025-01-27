@@ -51,10 +51,10 @@ const FilterTags = ({ tags, lang, postDatas }: { tags: Record<string, number>; l
       <Box>
         <WrapperTags>
           {/* 태그 목록 출력 */}
-          {Object.entries(tags).map(([tag, count]) =>
+          {Object.entries(tags).map(([tag, count], index) =>
             tag !== "all" ? (
               <Tag
-                key={tag}
+                key={`filter_${tag}_${index}`}
                 tag={tag}
                 count={count}
                 isSelected={selectedTags.has(tag)}
@@ -63,7 +63,7 @@ const FilterTags = ({ tags, lang, postDatas }: { tags: Record<string, number>; l
               />
             ) : (
               <Tag
-                key={tag}
+                key={`filter_all_${index}`}
                 tag={lang === "ko" ? "전체" : "全体"}
                 count={count}
                 isSelected={selectedTags.size === 0}

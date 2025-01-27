@@ -18,6 +18,7 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
+import CloseIcon from "@mui/icons-material/Close";
 import useCodeTheme from "@/hooks/useCodeTheme";
 import useResizeObserver from "@/hooks/useResizeObserver";
 import useScrollPercentage from "@/hooks/useScrollPercentage";
@@ -126,7 +127,7 @@ const ScrollPercentageWrapper = styled(Box)`
 
 const ScrollPercentage = styled(Box)`
   background-color: ${({ theme }) => theme.palette.primary.main};
-  height: 80%;
+  height: 8px;
 `;
 
 export const TagWrapper = styled(Box)`
@@ -219,7 +220,7 @@ function PostModal({ closeModal, postData }: PostModalProps) {
               {tagOpen && (
                 <TagWrapper>
                   {postData.data.tags.map((tag) => (
-                    <Tag key={tag}>{tag}</Tag>
+                    <Tag key={`modal_${tag}`}>{tag}</Tag>
                   ))}
                 </TagWrapper>
               )}
