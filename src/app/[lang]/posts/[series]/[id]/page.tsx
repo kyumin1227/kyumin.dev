@@ -6,7 +6,11 @@ import MarkdownBody from "@/components/MarkdownBody";
 export async function generateMetadata({ params }: { params: Promise<{ lang: string; series: string; id: string }> }) {
   const { lang, series, id } = await params;
 
-  const { data }: { data: iData } = await fetchPostAndCompileMdx(series, id, lang, {});
+  const result = await fetchPostAndCompileMdx(series, id, lang, {});
+  if (!result) {
+    throw new Error("Failed to fetch post data");
+  }
+  const { data }: { data: iData } = result;
 
   return {
     title: data.title,
@@ -21,9 +25,8 @@ export default async function PostPage({ params }: { params: Promise<{ lang: str
   const { lang, series, id } = await params;
   console.log(lang, series, id);
 
-  const { data, compiledMdx, readingTime } = await fetchPostAndCompileMdx(series, id, lang, {});
-
-  if (!data) {
+  const result = await fetchPostAndCompileMdx(series, id, lang, {});
+  if (!result) {
     return (
       <>
         <Button color="secondary">fdas</Button>
@@ -31,6 +34,7 @@ export default async function PostPage({ params }: { params: Promise<{ lang: str
       </>
     );
   }
+  const { data, compiledMdx, readingTime } = result;
 
   return (
     <Box display={"flex"} justifyContent={"center"} position={"relative"} overflow={"visible"}>

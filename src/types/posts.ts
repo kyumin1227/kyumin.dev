@@ -29,6 +29,7 @@ interface iData {
   date: string;
   tags: string[];
   coverImage: string;
+  visible: boolean;
 }
 
 interface iPostsSepSeriesAndTags {

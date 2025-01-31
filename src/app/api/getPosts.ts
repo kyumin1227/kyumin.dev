@@ -9,7 +9,7 @@ import remarkToc from "remark-toc";
 import rehypeSlug from "rehype-slug";
 import readingTime from "reading-time";
 
-const GITHUB_API_URL = process.env.GITHUB_API_URL;
+const GITHUB_API_URL = `https://api.github.com/repos/${process.env.GITHUB_USER_ID}/${process.env.GITHUB_REPOSITORY_NAME}/contents/${process.env.POST_PATH}`;
 const GITHUB_API_TOKEN = process.env.GITHUB_API_TOKEN;
 
 const cache = new Map<string, any>(); // 메모리 캐시
@@ -20,17 +20,27 @@ const appendTags = (tagsCount: Record<string, number>, tags: string[]) => {
   });
 };
 
+/**
+ * 특정 post 요청 시 mdx 컴파일 후 반환
+ * @param series
+ * @param post
+ * @param lang
+ * @param tagsCount
+ * @returns
+ */
 export const fetchPostAndCompileMdx = async (
   series: string,
   post: string,
   lang: string,
   tagsCount?: Record<string, number> | null
-): Promise<{ content: any; path: string; compiledMdx: any; data: any; lang: string; readingTime: string }> => {
+): Promise<{ content: any; path: string; compiledMdx: any; data: any; lang: string; readingTime: string } | null> => {
   const cacheName = `${series}_${post}_${lang}`;
 
   if (cache.has(cacheName)) {
     const data = cache.get(cacheName);
-    console.log(data);
+    if (!data) {
+      return null;
+    }
 
     if (tagsCount) {
       appendTags(tagsCount, data.data.tags);
@@ -48,6 +58,12 @@ export const fetchPostAndCompileMdx = async (
   console.log(encodedMdx);
   const mdx = Buffer.from(encodedMdx.content, "base64").toString("utf-8");
   const content = matter(mdx);
+
+  if (!content.data.visible && tagsCount) {
+    tagsCount["all"] -= 1;
+    cache.set(cacheName, null);
+    return null;
+  }
 
   const compiledMdx = await unified()
     .use(remarkToc, { maxDepth: 3 })
@@ -82,6 +98,13 @@ export const fetchPostAndCompileMdx = async (
   };
 };
 
+/**
+ * 특정 series의 글 목록 요청
+ * @param lang
+ * @param series
+ * @param tagsCount
+ * @returns
+ */
 const fetchPosts = async (lang: string, series: string, tagsCount: Record<string, number>) => {
   const postsData = await fetch(`${GITHUB_API_URL}/${series}`, {
     headers: {
@@ -99,7 +122,10 @@ const fetchPosts = async (lang: string, series: string, tagsCount: Record<string
       tagsCount["all"] = (tagsCount["all"] || 0) + 1;
 
       const postData = await fetchPostAndCompileMdx(series, post.name.replace(`_${lang}.mdx`, ""), lang, tagsCount);
-      console.log(postData);
+
+      if (!postData) {
+        return null;
+      }
 
       // 클라이언트에 데이터 전송을 위해 Uint8Array 형식인 orig 제거
       return {
@@ -111,8 +137,9 @@ const fetchPosts = async (lang: string, series: string, tagsCount: Record<string
       };
     });
 
-  const resolvedPosts = await Promise.all(postPromises);
+  const resolvedPosts = (await Promise.all(postPromises)).filter((post) => post !== null); // null 제거
   posts.push(...resolvedPosts);
+
   return posts; // posts 배열 반환
 };
 
@@ -145,14 +172,15 @@ export const getPostsSepSeries = async (lang: string) => {
   // 각 시리즈의 포스트 데이터를 비동기적으로 가져옴
   const posts = await Promise.all(
     seriesData.map(async (series: any) => {
-      console.log(series.name);
       const postDatas = await fetchPosts(lang, series.name, tagsCount);
 
-      return { series: series.name, posts: postDatas }; // 시리즈명과 글 데이터를 객체로 반환
+      return postDatas.length > 0 ? { series: series.name, posts: postDatas } : null; // 시리즈명과 글 데이터를 객체로 반환
     })
   );
 
-  cache.set(`allPosts_${lang}`, { posts, tags: tagsCount });
+  const filterPosts = posts.filter((post) => post !== null);
 
-  return { posts, tags: tagsCount }; // 모든 시리즈 데이터를 포함한 배열 반환
+  cache.set(`allPosts_${lang}`, { posts: filterPosts, tags: tagsCount });
+
+  return { posts: filterPosts, tags: tagsCount }; // 모든 시리즈 데이터를 포함한 배열 반환
 };
