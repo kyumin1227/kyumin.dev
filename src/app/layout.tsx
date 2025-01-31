@@ -8,6 +8,7 @@ import theme from "../styles/theme";
 import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
 import Footer from "../components/Footer";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: "Kyumin.dev",
@@ -15,6 +16,10 @@ export const metadata: Metadata = {
   authors: [{ name: "Kyumin Kim" }],
   keywords: ["개발", "프로그래밍", "React", "Next.js", "블로그"],
 };
+
+// export async function generateStaticParams() {
+//   return [{ lang: "ko" }, { lang: "ja" }];
+// }
 
 const gaId: string = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || "";
 
@@ -39,6 +44,7 @@ export default function RootLayout({
           </AppRouterCacheProvider>
         </ThemeProvider>
         <GoogleAnalytics gaId={gaId} />
+        <SpeedInsights />
       </body>
     </html>
   );
