@@ -90,19 +90,21 @@ const MarkdownBody = ({
   const [tagOpen, setTagOpen] = useState(false);
   const [dateString, setDateString] = useState<string>("");
   const [readingTimeString, setReadingTimeString] = useState<string>("");
-  const [isWide, setIsWide] = useState(window.innerWidth > 1150);
+  const [isWide, setIsWide] = useState(false);
   const toc = useExtractToc(compiledMdx, CONTENTS_ID); // 목차 추출
   const activeIds = useActiveSections(".markdown-body h1, .markdown-body h2, .markdown-body h3"); // 현재 보이는 섹션
 
   useEffect(() => {
     const handleResize = () => setIsWide(window.innerWidth > 1150);
 
+    handleResize(); // 최초 렌더링 시 실행
+
     // 이벤트 리스너 추가
     window.addEventListener("resize", handleResize);
 
     // 컴포넌트 언마운트 시 이벤트 리스너 제거
     return () => window.removeEventListener("resize", handleResize);
-  }, [window.innerWidth]);
+  }, []);
 
   useEffect(() => {
     setDateString(formatDate(date, lang));

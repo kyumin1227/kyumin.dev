@@ -1,7 +1,10 @@
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 
-import { fetchPostAndCompileMdx } from "@/app/api/getPosts";
+import { fetchPostAndCompileMdx, getPostsSepSeries } from "@/app/api/getPosts";
 import MarkdownBody from "@/components/MarkdownBody";
+import serializePosts from "@/utils/serializedPosts";
+
+export const dynamicParams = false;
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string; series: string; id: string }> }) {
   const { lang, series, id } = await params;
@@ -21,18 +24,28 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   };
 }
 
+// export async function generateStaticParams() {
+//   const { posts: koPosts } = await getPostsSepSeries("ko");
+
+//   console.log(koPosts[0].posts);
+
+//   const { posts: jaPosts } = await getPostsSepSeries("ja");
+//   const allPostDatas = [...serializePosts(koPosts), ...serializePosts(jaPosts)];
+
+//   return allPostDatas.map((post) => ({
+//     lang: post.lang,
+//     series: post.path.split("/")[0],
+//     id: post.path.split("/")[1],
+//   }));
+// }
+
 export default async function PostPage({ params }: { params: Promise<{ lang: string; series: string; id: string }> }) {
   const { lang, series, id } = await params;
   console.log(lang, series, id);
 
   const result = await fetchPostAndCompileMdx(series, id, lang, {});
   if (!result) {
-    return (
-      <>
-        <Button color="secondary">fdas</Button>
-        <div>게시물이 존재하지 않습니다.</div>
-      </>
-    );
+    return <div>게시물이 존재하지 않습니다.</div>;
   }
   const { data, compiledMdx, readingTime } = result;
 

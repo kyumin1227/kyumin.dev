@@ -55,7 +55,6 @@ export const fetchPostAndCompileMdx = async (
   });
 
   const encodedMdx: iPost = await data.json();
-  console.log(encodedMdx);
   const mdx = Buffer.from(encodedMdx.content, "base64").toString("utf-8");
   const content = matter(mdx);
 
@@ -134,6 +133,7 @@ const fetchPosts = async (lang: string, series: string, tagsCount: Record<string
         data: postData.data,
         lang,
         compiledMdx: String(postData.compiledMdx),
+        readingTime: postData.readingTime,
       };
     });
 
