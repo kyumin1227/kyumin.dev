@@ -2,10 +2,11 @@
 
 import Giscus from "@giscus/react";
 import { useTheme } from "@mui/material";
+import { usePathname } from "next/navigation";
 
 const Comments = () => {
   const theme = useTheme();
-  const currentPath = window.location.pathname;
+  const currentPath = usePathname();
 
   // 경로에서 언어 추출 (첫 번째 경로 구분자 부분)
   const langMatch = currentPath.match(/^\/(ko|ja)/);

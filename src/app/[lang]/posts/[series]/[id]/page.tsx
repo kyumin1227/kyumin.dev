@@ -24,22 +24,26 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   };
 }
 
-// export async function generateStaticParams() {
-//   const { posts: koPosts } = await getPostsSepSeries("ko");
+export async function generateStaticParams() {
+  const { posts: koPosts } = await getPostsSepSeries("ko");
 
-//   console.log(koPosts[0].posts);
+  console.log(koPosts[0].posts);
 
-//   const { posts: jaPosts } = await getPostsSepSeries("ja");
-//   const allPostDatas = [...serializePosts(koPosts), ...serializePosts(jaPosts)];
+  const { posts: jaPosts } = await getPostsSepSeries("ja");
+  const allPostDatas = [...serializePosts(koPosts), ...serializePosts(jaPosts)];
 
-//   return allPostDatas.map((post) => ({
-//     lang: post.lang,
-//     series: post.path.split("/")[0],
-//     id: post.path.split("/")[1],
-//   }));
-// }
+  return allPostDatas.map((post) => ({
+    lang: post.lang,
+    series: post.path.split("/")[0],
+    id: post.path.split("/")[1],
+  }));
+}
 
-export default async function PostPage({ params }: { params: Promise<{ lang: string; series: string; id: string }> }) {
+export default async function PostPage({
+  params,
+}: {
+  params: Promise<{ lang: "ko" | "ja"; series: string; id: string }>;
+}) {
   const { lang, series, id } = await params;
   console.log(lang, series, id);
 

@@ -18,7 +18,6 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import CloseIcon from "@mui/icons-material/Close";
 import useCodeTheme from "@/hooks/useCodeTheme";
 import useResizeObserver from "@/hooks/useResizeObserver";
 import useScrollPercentage from "@/hooks/useScrollPercentage";
@@ -26,7 +25,7 @@ import useExtractToc from "@/hooks/useExtractToc";
 import useActiveSections from "@/hooks/useActiveSections";
 import useViewportHeight from "@/hooks/useViewportHeight";
 
-const CONTENTS_ID = "contents"; // 목차로 이용할 ID
+const CONTENTS_ID = process.env.TOC_HEADING || "Contents"; // 목차로 이용할 ID
 
 interface PostModalProps {
   closeModal: () => void;
@@ -237,8 +236,8 @@ function PostModal({ closeModal, postData }: PostModalProps) {
                       rehypePlugins={[rehypeRaw]}
                       components={{
                         h1: ({ node, ...props }) => {
-                          // id가 "contents"인 경우 렌더링하지 않음
-                          if (props.id === "contents") {
+                          // CONTENTS_ID는 렌더링하지 않음
+                          if (props.id === CONTENTS_ID) {
                             return null;
                           }
                           return <h1 {...props} />;
@@ -266,8 +265,8 @@ function PostModal({ closeModal, postData }: PostModalProps) {
                   rehypePlugins={[rehypeRaw]}
                   components={{
                     h1: ({ node, ...props }) => {
-                      // id가 "contents"인 경우 렌더링하지 않음
-                      if (props.id === "contents") {
+                      // CONTENTS_ID는 렌더링하지 않음
+                      if (props.id === CONTENTS_ID) {
                         return null;
                       }
                       return <h1 {...props} />;

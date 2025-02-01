@@ -65,7 +65,7 @@ export const fetchPostAndCompileMdx = async (
   }
 
   const compiledMdx = await unified()
-    .use(remarkToc, { maxDepth: 3 })
+    .use(remarkToc, { maxDepth: 3, heading: process.env.TOC_HEADING || "Contents" })
     .use(remarkParse)
     .use(remarkRehype)
     .use(rehypeSanitize)

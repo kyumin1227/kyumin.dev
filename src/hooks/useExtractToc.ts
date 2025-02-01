@@ -9,7 +9,10 @@ import { useEffect, useState } from "react";
 const useExtractToc = (compiledMdx: string, contentsId: string) => {
   const [toc, setToc] = useState<string | null>(null);
 
+  contentsId = contentsId.toLowerCase(); // id는 모두 소문자
+
   useEffect(() => {
+    if (typeof window === "undefined") return;
     const container = document.querySelector(".markdown-body");
     if (container) {
       const contentsHeading = container.querySelector(`h1#${contentsId}`);

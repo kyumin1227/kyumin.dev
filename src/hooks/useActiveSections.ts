@@ -11,6 +11,7 @@ const useActiveSections = (sectionSelector: string) => {
 
   // 현재 보이는 섹션 추적
   useEffect(() => {
+    if (typeof window === "undefined") return;
     const activeSet = new Set<string>();
     const allSections = Array.from(document.querySelectorAll(sectionSelector));
     let lastActiveId: string | null = null;
