@@ -37,7 +37,7 @@ const MarkdownBodyStyle = styled(Box)`
   }
 `;
 
-const MarkdownBody = ({
+const PostBody = ({
   compiledMdx,
   data,
   lang,
@@ -98,4 +98,4 @@ const MarkdownBody = ({
   );
 };
 
-export default MarkdownBody;
+export default PostBody;
