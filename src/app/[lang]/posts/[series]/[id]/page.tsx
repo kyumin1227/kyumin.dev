@@ -55,9 +55,5 @@ export default async function PostPage({
   }
   const { data, compiledMdx, readingTime } = result;
 
-  return (
-    <Box display={"flex"} justifyContent={"center"} position={"relative"} overflow={"visible"}>
-      <PostBody compiledMdx={compiledMdx} data={data} lang={lang} readingTime={readingTime} />
-    </Box>
-  );
+  return <PostBody compiledMdx={compiledMdx} data={data} lang={lang} readingTime={readingTime} />;
 }
