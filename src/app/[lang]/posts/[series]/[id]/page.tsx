@@ -6,7 +6,11 @@ import serializePosts from "@/utils/serializedPosts";
 
 export const dynamicParams = false;
 
-export async function generateMetadata({ params }: { params: Promise<{ lang: string; series: string; id: string }> }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: LangType; series: string; id: string }>;
+}) {
   const { lang, series, id } = await params;
 
   const result = await fetchPostAndCompileMdx(series, id, lang, {});
@@ -42,14 +46,13 @@ export async function generateStaticParams() {
 export default async function PostPage({
   params,
 }: {
-  params: Promise<{ lang: "ko" | "ja"; series: string; id: string }>;
+  params: Promise<{ lang: LangType; series: string; id: string }>;
 }) {
   const { lang, series, id } = await params;
-  console.log(lang, series, id);
 
   const result = await fetchPostAndCompileMdx(series, id, lang, {});
   if (!result) {
-    return <div>게시물이 존재하지 않습니다.</div>;
+    return <div>{lang === "ja" ? "記事が存在しません。" : "게시물이 존재하지 않습니다."}</div>;
   }
   const { data, compiledMdx, readingTime } = result;
 

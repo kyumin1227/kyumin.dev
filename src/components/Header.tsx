@@ -12,7 +12,7 @@ const Header = () => {
   const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(true); // 헤더 보임 상태
   const [lastScrollY, setLastScrollY] = useState(0); // 마지막 스크롤 위치
-  const [language, setLanguage] = useState("ja"); // 언어
+  const [language, setLanguage] = useState<LangType>("ja"); // 언어
   const [path, setPath] = useState("");
 
   useEffect(() => {

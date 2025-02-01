@@ -6,7 +6,7 @@
  * @param lang 언어 ("ko" | "ja")
  * @returns
  */
-export const formatDate = (date: Date, lang: string): string => {
+export const formatDate = (date: Date, lang: LangType): string => {
   return date.toLocaleDateString(lang === "ko" ? "ko-KR" : "ja-JP", {
     year: "numeric",
     month: "long",

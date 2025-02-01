@@ -8,7 +8,7 @@ import { useState } from "react";
 import { Tag, TagWrapper } from "./PostModal";
 import { formatDate, formatReadingTime } from "@/utils/dataFormatter";
 
-const PostInfo = ({ data, lang, readingTime }: { data: iData; lang: "ko" | "ja"; readingTime: string }) => {
+const PostInfo = ({ data, lang, readingTime }: { data: iData; lang: LangType; readingTime: string }) => {
   const [tagOpen, setTagOpen] = useState(false);
   const dateString = formatDate(new Date(data.date), lang);
   const readingTimeString = formatReadingTime(readingTime, lang);

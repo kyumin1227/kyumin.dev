@@ -45,7 +45,7 @@ const MarkdownBody = ({
 }: {
   compiledMdx: any;
   data: iData;
-  lang: "ko" | "ja";
+  lang: LangType;
   readingTime: string;
 }) => {
   const theme = useTheme();

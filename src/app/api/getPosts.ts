@@ -31,9 +31,9 @@ const appendTags = (tagsCount: Record<string, number>, tags: string[]) => {
 export const fetchPostAndCompileMdx = async (
   series: string,
   post: string,
-  lang: string,
+  lang: LangType,
   tagsCount?: Record<string, number> | null
-): Promise<{ content: any; path: string; compiledMdx: any; data: any; lang: string; readingTime: string } | null> => {
+): Promise<{ content: any; path: string; compiledMdx: any; data: any; lang: LangType; readingTime: string } | null> => {
   const cacheName = `${series}_${post}_${lang}`;
 
   if (cache.has(cacheName)) {
@@ -104,7 +104,7 @@ export const fetchPostAndCompileMdx = async (
  * @param tagsCount
  * @returns
  */
-const fetchPosts = async (lang: string, series: string, tagsCount: Record<string, number>) => {
+const fetchPosts = async (lang: LangType, series: string, tagsCount: Record<string, number>) => {
   const postsData = await fetch(`${GITHUB_API_URL}/${series}`, {
     headers: {
       Authorization: `token ${GITHUB_API_TOKEN}`,
@@ -148,7 +148,7 @@ const fetchPosts = async (lang: string, series: string, tagsCount: Record<string
  * @param lang - 언어
  * @returns
  */
-export const getPostsSepSeries = async (lang: string) => {
+export const getPostsSepSeries = async (lang: LangType) => {
   const cacheName = `allPosts_${lang}`;
 
   if (cache.has(cacheName)) {

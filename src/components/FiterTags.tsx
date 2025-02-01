@@ -11,7 +11,15 @@ const WrapperTags = styled(Box)`
   margin-bottom: 32px;
 `;
 
-const FilterTags = ({ tags, lang, postDatas }: { tags: Record<string, number>; lang: string; postDatas: iPost[] }) => {
+const FilterTags = ({
+  tags,
+  lang,
+  postDatas,
+}: {
+  tags: Record<string, number>;
+  lang: LangType;
+  postDatas: iPost[];
+}) => {
   const theme = useTheme();
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
 

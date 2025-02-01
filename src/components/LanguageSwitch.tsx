@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 const MotionSvgIcon = motion(SvgIcon);
 
-const LanguageSwitch = ({ language, path }: { language: string; path: string }) => {
+const LanguageSwitch = ({ language, path }: { language: LangType; path: string }) => {
   const [open, setOpen] = useState(false); // 로딩 상태
 
   useEffect(() => {

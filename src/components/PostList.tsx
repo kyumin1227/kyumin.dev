@@ -9,7 +9,7 @@ import { usePathname } from "next/navigation";
 
 const MotionModal = motion(Modal);
 
-const PostList = ({ posts, lang }: { posts: iPost[]; lang: string }) => {
+const PostList = ({ posts, lang }: { posts: iPost[]; lang: LangType }) => {
   const pathname = usePathname();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalPost, setModalPost] = useState<any | null>(null);

@@ -7,7 +7,7 @@ interface iPost {
   path: string;
   isEmpty: boolean;
   excerpt: string;
-  lang: string;
+  lang: LangType;
   compiledMdx: any;
   readingTime: string;
 }
@@ -36,3 +36,5 @@ interface iPostsSepSeriesAndTags {
   posts: iPostsSepSeries[];
   tags: Record<string, number>;
 }
+
+type LangType = "ko" | "ja";
