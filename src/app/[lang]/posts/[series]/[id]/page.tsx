@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import { fetchPostAndCompileMdx, getPostsSepSeries } from "@/app/api/getPosts";
 import PostBody from "@/components/PostBody";
 import serializePosts from "@/utils/serializedPosts";
@@ -55,9 +54,5 @@ export default async function PostPage({
   }
   const { data, compiledMdx, readingTime } = result;
 
-  return (
-    <Box display={"flex"} justifyContent={"center"} position={"relative"} overflow={"visible"}>
-      <PostBody compiledMdx={compiledMdx} data={data} lang={lang} readingTime={readingTime} />
-    </Box>
-  );
+  return <PostBody compiledMdx={compiledMdx} data={data} lang={lang} readingTime={readingTime} />;
 }

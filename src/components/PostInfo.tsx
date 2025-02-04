@@ -1,12 +1,25 @@
-import { Button, Grid2, Typography } from "@mui/material";
+import { Box, Button, Grid2, styled, Typography } from "@mui/material";
 import { IconAndText } from "./PostCard";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import { useState } from "react";
-import { Tag, TagWrapper } from "./PostModal";
 import { formatDate, formatReadingTime } from "@/utils/dataFormatter";
+
+const TagWrapper = styled(Box)`
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+`;
+
+const Tag = styled(Box)`
+  background-color: ${({ theme }) => theme.palette.primary.main};
+  margin: 4px;
+  padding: 8px;
+  border-radius: 4px;
+  color: ${({ theme }) => (theme.palette.mode === "dark" ? theme.palette.common.black : theme.palette.common.white)};
+`;
 
 const PostInfo = ({ data, lang, readingTime }: { data: iData; lang: LangType; readingTime: string }) => {
   const [tagOpen, setTagOpen] = useState(false);
