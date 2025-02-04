@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert, Box, Divider, styled, Typography, useTheme } from "@mui/material";
+import { Alert, AlertTitle, Box, Divider, styled, Typography, useTheme } from "@mui/material";
 import Comments from "./Comments";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -12,7 +12,7 @@ import useExtractToc from "@/hooks/useExtractToc";
 import useActiveSections from "@/hooks/useActiveSections";
 import useCheckWide from "@/hooks/useCheckWide";
 import PostInfo from "./PostInfo";
-import { MDXProvider } from "@mdx-js/react";
+import { MDXRemote } from "next-mdx-remote";
 
 const CONTENTS_ID = process.env.TOC_HEADING || "Contents"; // 목차로 이용할 ID
 
@@ -90,7 +90,7 @@ const PostBody = ({
                     components={{
                       h1: ({ node, ...props }) => {
                         // CONTENTS_ID는 렌더링하지 않음
-                        if (props.id === CONTENTS_ID) {
+                        if (props.id === CONTENTS_ID.toLowerCase()) {
                           return null;
                         }
                         return <h1 {...props} />;
@@ -101,9 +101,7 @@ const PostBody = ({
                   </ReactMarkdown>
                 </>
               )}
-              <MDXProvider components={components}>
-                <ReactMarkdown rehypePlugins={[rehypeRaw]}>{compiledMdx}</ReactMarkdown>
-              </MDXProvider>
+              <MDXRemote components={components} {...compiledMdx} />
               <Comments />
             </Box>
           </MarkdownBodyStyle>
@@ -118,5 +116,8 @@ export default PostBody;
 const components = {
   Alert: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => {
     return <Alert {...props}>{children}</Alert>;
+  },
+  AlertTitle: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => {
+    return <AlertTitle {...props}>{children}</AlertTitle>;
   },
 };

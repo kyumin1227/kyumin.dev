@@ -1,16 +1,10 @@
 import matter from "gray-matter";
-import { unified } from "unified";
 import remarkParse from "remark-parse";
-import remarkRehype from "remark-rehype";
-import rehypeSanitize from "rehype-sanitize";
-import rehypeStringify from "rehype-stringify";
 import rehypePrettyCode from "rehype-pretty-code";
 import remarkToc from "remark-toc";
 import rehypeSlug from "rehype-slug";
 import readingTime from "reading-time";
-import rehypeReact, { Options } from "rehype-react";
-import { createElement, Fragment } from "react";
-import { Alert } from "@mui/material";
+import { serialize } from "next-mdx-remote/serialize";
 
 const GITHUB_API_URL = `https://api.github.com/repos/${process.env.GITHUB_USER_ID}/${process.env.GITHUB_REPOSITORY_NAME}/contents/${process.env.POST_PATH}`;
 const GITHUB_API_TOKEN = process.env.GITHUB_API_TOKEN;
@@ -21,14 +15,6 @@ const appendTags = (tagsCount: Record<string, number>, tags: string[]) => {
   tags.forEach((tag: string) => {
     tagsCount[tag] = (tagsCount[tag] || 0) + 1; // 태그 개수 증가
   });
-};
-
-const rehypeReactOptions: Options = {
-  createElement,
-  Fragment: Fragment,
-  components: {
-    Alert,
-  } as any,
 };
 
 /**
@@ -75,18 +61,13 @@ export const fetchPostAndCompileMdx = async (
     return null;
   }
 
-  const compiledMdx = await unified()
-    .use(remarkToc, { maxDepth: 3, heading: process.env.TOC_HEADING || "Contents" })
-    .use(remarkParse)
-    .use(remarkRehype)
-    .use(rehypeSanitize)
-    .use(rehypePrettyCode, { theme: "github-dark" })
-    .use(rehypeStringify)
-    .use(rehypeSlug)
-    // .use(rehypeReact, rehypeReactOptions)
-    .process(content.content);
-
-  console.log(compiledMdx);
+  const compiledMdx = await serialize(content.content, {
+    mdxOptions: {
+      remarkPlugins: [[remarkToc, { maxDepth: 3, heading: process.env.TOC_HEADING || "Contents" }], remarkParse],
+      rehypePlugins: [rehypeSlug, [rehypePrettyCode, { theme: "github-dark", highlightLines: true }]],
+      format: "mdx",
+    },
+  });
 
   const { text } = readingTime(content.content);
 
@@ -98,7 +79,7 @@ export const fetchPostAndCompileMdx = async (
     ...(({ orig, ...rest }) => rest)(content),
     lang,
     path: `${series}/${post}`,
-    compiledMdx: String(compiledMdx),
+    compiledMdx: compiledMdx,
     readingTime: text,
   });
 
@@ -106,7 +87,7 @@ export const fetchPostAndCompileMdx = async (
     ...(({ orig, ...rest }) => rest)(content),
     lang,
     path: `${series}/${post}`,
-    compiledMdx: String(compiledMdx),
+    compiledMdx: compiledMdx,
     readingTime: text,
   };
 };
@@ -146,7 +127,7 @@ const fetchPosts = async (lang: LangType, series: string, tagsCount: Record<stri
         path: `${series}/${path}`,
         data: postData.data,
         lang,
-        compiledMdx: String(postData.compiledMdx),
+        compiledMdx: postData.compiledMdx,
         readingTime: postData.readingTime,
       };
     });
