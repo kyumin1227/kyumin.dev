@@ -84,26 +84,26 @@ const PostBody = ({
                   <Typography variant="h1" fontWeight={"bold"}>
                     목차
                   </Typography>
-                  <MDXProvider components={components}>
-                    <ReactMarkdown
-                      rehypePlugins={[rehypeRaw]}
-                      components={{
-                        h1: ({ node, ...props }) => {
-                          // CONTENTS_ID는 렌더링하지 않음
-                          if (props.id === CONTENTS_ID) {
-                            return null;
-                          }
-                          return <h1 {...props} />;
-                        },
-                      }}
-                    >
-                      {toc}
-                    </ReactMarkdown>
-                  </MDXProvider>
+
+                  <ReactMarkdown
+                    rehypePlugins={[rehypeRaw]}
+                    components={{
+                      h1: ({ node, ...props }) => {
+                        // CONTENTS_ID는 렌더링하지 않음
+                        if (props.id === CONTENTS_ID) {
+                          return null;
+                        }
+                        return <h1 {...props} />;
+                      },
+                    }}
+                  >
+                    {toc}
+                  </ReactMarkdown>
                 </>
               )}
-
-              <ReactMarkdown rehypePlugins={[rehypeRaw]}>{compiledMdx}</ReactMarkdown>
+              <MDXProvider components={components}>
+                <ReactMarkdown rehypePlugins={[rehypeRaw]}>{compiledMdx}</ReactMarkdown>
+              </MDXProvider>
               <Comments />
             </Box>
           </MarkdownBodyStyle>
