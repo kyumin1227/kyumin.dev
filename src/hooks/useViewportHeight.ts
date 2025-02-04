@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 
+/**
+ * 화면이 보이는 영역의 높이 계산
+ * @returns
+ */
 const useViewportHeight = () => {
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
 

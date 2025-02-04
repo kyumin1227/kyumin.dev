@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import { fetchPostAndCompileMdx, getPostsSepSeries } from "@/app/api/getPosts";
 import PostBody from "@/components/PostBody";
 import serializePosts from "@/utils/serializedPosts";

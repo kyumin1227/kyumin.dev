@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Divider, styled, Typography, useTheme } from "@mui/material";
+import { Alert, Box, Divider, styled, Typography, useTheme } from "@mui/material";
 import Comments from "./Comments";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -12,6 +12,7 @@ import useExtractToc from "@/hooks/useExtractToc";
 import useActiveSections from "@/hooks/useActiveSections";
 import useCheckWide from "@/hooks/useCheckWide";
 import PostInfo from "./PostInfo";
+import { MDXProvider } from "@mdx-js/react";
 
 const CONTENTS_ID = process.env.TOC_HEADING || "Contents"; // 목차로 이용할 ID
 
@@ -83,20 +84,22 @@ const PostBody = ({
                   <Typography variant="h1" fontWeight={"bold"}>
                     목차
                   </Typography>
-                  <ReactMarkdown
-                    rehypePlugins={[rehypeRaw]}
-                    components={{
-                      h1: ({ node, ...props }) => {
-                        // CONTENTS_ID는 렌더링하지 않음
-                        if (props.id === CONTENTS_ID) {
-                          return null;
-                        }
-                        return <h1 {...props} />;
-                      },
-                    }}
-                  >
-                    {toc}
-                  </ReactMarkdown>
+                  <MDXProvider components={components}>
+                    <ReactMarkdown
+                      rehypePlugins={[rehypeRaw]}
+                      components={{
+                        h1: ({ node, ...props }) => {
+                          // CONTENTS_ID는 렌더링하지 않음
+                          if (props.id === CONTENTS_ID) {
+                            return null;
+                          }
+                          return <h1 {...props} />;
+                        },
+                      }}
+                    >
+                      {toc}
+                    </ReactMarkdown>
+                  </MDXProvider>
                 </>
               )}
 
@@ -111,3 +114,9 @@ const PostBody = ({
 };
 
 export default PostBody;
+
+const components = {
+  Alert: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => {
+    return <Alert {...props}>{children}</Alert>;
+  },
+};
