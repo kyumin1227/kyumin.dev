@@ -4,6 +4,7 @@ import { Box, styled, useTheme } from "@mui/material";
 import React, { useState } from "react";
 import PostList from "./PostList";
 import Tag from "./Tag";
+import { iPost, LangType } from "@/types/posts";
 
 const WrapperTags = styled(Box)`
   display: flex;

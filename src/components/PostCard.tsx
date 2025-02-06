@@ -10,6 +10,7 @@ import { formatDate, formatReadingTime } from "@/utils/dataFormatter";
 import Image from "next/image";
 import DynamicTagContainer from "./DynamicTagContainer";
 import zIndex from "@mui/material/styles/zIndex";
+import { iPost } from "@/types/posts";
 
 interface PostCardProps {
   data: iPost;

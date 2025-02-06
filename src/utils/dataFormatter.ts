@@ -1,3 +1,5 @@
+import { LangType } from "@/types/posts";
+
 /**
  * 언어에 따라 날짜 표시 방식 변경
  * 한국어 = xxxx년 xx월 xx일

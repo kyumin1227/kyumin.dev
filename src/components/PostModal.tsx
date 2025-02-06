@@ -7,6 +7,7 @@ import Footer from "./Footer";
 import useScrollPercentage from "@/hooks/useScrollPercentage";
 import useViewportHeight from "@/hooks/useViewportHeight";
 import PostBody from "./PostBody";
+import { iPost } from "@/types/posts";
 
 interface PostModalProps {
   closeModal: () => void;

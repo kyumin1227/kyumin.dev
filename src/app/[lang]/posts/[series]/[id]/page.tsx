@@ -1,5 +1,6 @@
 import { fetchPostAndCompileMdx, getPostsSepSeries } from "@/app/api/getPosts";
 import PostBody from "@/components/PostBody";
+import { iData, LangType } from "@/types/posts";
 import serializePosts from "@/utils/serializedPosts";
 
 export const dynamicParams = false;

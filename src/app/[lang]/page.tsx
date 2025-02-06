@@ -1,6 +1,7 @@
 import { getPostsSepSeries } from "../api/getPosts";
 import FilterTags from "../../components/FiterTags";
 import serializePosts from "@/utils/serializedPosts";
+import { iPostsSepSeriesAndTags, LangType } from "@/types/posts";
 
 export const dynamicParams = false;
 

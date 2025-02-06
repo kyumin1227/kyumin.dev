@@ -12,7 +12,8 @@ import useExtractToc from "@/hooks/useExtractToc";
 import useActiveSections from "@/hooks/useActiveSections";
 import useCheckWide from "@/hooks/useCheckWide";
 import PostInfo from "./PostInfo";
-import { MDXRemote } from "next-mdx-remote";
+import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
+import { iData, LangType } from "@/types/posts";
 
 const CONTENTS_ID = process.env.TOC_HEADING || "Contents"; // 목차로 이용할 ID
 
@@ -51,7 +52,7 @@ const PostBody = ({
   width = 1150,
   scrollTop = 80,
 }: {
-  compiledMdx: any;
+  compiledMdx: MDXRemoteSerializeResult;
   data: iData;
   lang: LangType;
   readingTime: string;

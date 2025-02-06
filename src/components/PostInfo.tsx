@@ -6,6 +6,7 @@ import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import { useState } from "react";
 import { formatDate, formatReadingTime } from "@/utils/dataFormatter";
+import { iData, LangType } from "@/types/posts";
 
 const TagWrapper = styled(Box)`
   display: flex;

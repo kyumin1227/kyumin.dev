@@ -1,3 +1,4 @@
+import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { useEffect, useState } from "react";
 
 /**
@@ -6,7 +7,7 @@ import { useEffect, useState } from "react";
  * @param contentsId
  * @returns
  */
-const useExtractToc = (compiledMdx: string, contentsId: string) => {
+const useExtractToc = (compiledMdx: MDXRemoteSerializeResult, contentsId: string) => {
   const [toc, setToc] = useState<string | null>(null);
 
   contentsId = contentsId.toLowerCase(); // id는 모두 소문자

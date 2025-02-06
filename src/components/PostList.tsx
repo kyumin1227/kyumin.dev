@@ -6,6 +6,7 @@ import PostModal from "./PostModal";
 import React, { useEffect, useState } from "react";
 import PostCard from "./PostCard";
 import { usePathname } from "next/navigation";
+import { iPost, LangType } from "@/types/posts";
 
 const MotionModal = motion(Modal);
 

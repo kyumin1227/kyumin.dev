@@ -1,3 +1,5 @@
+import { iPost, iPostsSepSeries } from "@/types/posts";
+
 /**
  * 데이터를 직렬화하여 탐색하기 쉽게 변환 (시리즈 기반을 풀어서)
  * @param data iPostsSepSeriesAndTags 타입 데이터

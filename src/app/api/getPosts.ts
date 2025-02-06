@@ -5,6 +5,7 @@ import remarkToc from "remark-toc";
 import rehypeSlug from "rehype-slug";
 import readingTime from "reading-time";
 import { serialize } from "next-mdx-remote/serialize";
+import { iPost, LangType } from "@/types/posts";
 
 const GITHUB_API_URL = `https://api.github.com/repos/${process.env.GITHUB_USER_ID}/${process.env.GITHUB_REPOSITORY_NAME}/contents/${process.env.POST_PATH}`;
 const GITHUB_API_TOKEN = process.env.GITHUB_API_TOKEN;
