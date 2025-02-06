@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert, AlertTitle, Box, Divider, styled, Typography, useTheme } from "@mui/material";
+import { Box, Divider, styled, Typography, useTheme } from "@mui/material";
 import Comments from "./Comments";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -12,8 +12,15 @@ import useExtractToc from "@/hooks/useExtractToc";
 import useActiveSections from "@/hooks/useActiveSections";
 import useCheckWide from "@/hooks/useCheckWide";
 import PostInfo from "./PostInfo";
-import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
+import { MDXRemoteSerializeResult } from "next-mdx-remote";
 import { iData, LangType } from "@/types/posts";
+import useMDXComponents from "../../mdx-components";
+import dynamic from "next/dynamic";
+
+const MDXRemoteClient = dynamic(
+  () => import("next-mdx-remote").then((mod) => mod.MDXRemote),
+  { ssr: false } // 서버 사이드 렌더링을 비활성화합니다.
+);
 
 const CONTENTS_ID = process.env.TOC_HEADING || "Contents"; // 목차로 이용할 ID
 
@@ -102,7 +109,7 @@ const PostBody = ({
                   </ReactMarkdown>
                 </>
               )}
-              <MDXRemote components={components} {...compiledMdx} />
+              <MDXRemoteClient components={useMDXComponents({})} {...compiledMdx} />
               <Comments />
             </Box>
           </MarkdownBodyStyle>
@@ -113,12 +120,3 @@ const PostBody = ({
 };
 
 export default PostBody;
-
-const components = {
-  Alert: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => {
-    return <Alert {...props}>{children}</Alert>;
-  },
-  AlertTitle: ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => {
-    return <AlertTitle {...props}>{children}</AlertTitle>;
-  },
-};
