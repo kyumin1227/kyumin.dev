@@ -1,5 +1,6 @@
 "use client";
 
+import { LangType } from "@/types/posts";
 import { Backdrop, CircularProgress, SvgIcon } from "@mui/material";
 import { motion } from "framer-motion";
 import Link from "next/link";

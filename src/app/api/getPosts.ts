@@ -1,13 +1,11 @@
 import matter from "gray-matter";
-import { unified } from "unified";
 import remarkParse from "remark-parse";
-import remarkRehype from "remark-rehype";
-import rehypeSanitize from "rehype-sanitize";
-import rehypeStringify from "rehype-stringify";
 import rehypePrettyCode from "rehype-pretty-code";
-import remarkToc from "remark-toc";
 import rehypeSlug from "rehype-slug";
 import readingTime from "reading-time";
+import { serialize } from "next-mdx-remote/serialize";
+import { iPost, iToc, LangType } from "@/types/posts";
+import extractToc from "@/utils/extractToc";
 
 const GITHUB_API_URL = `https://api.github.com/repos/${process.env.GITHUB_USER_ID}/${process.env.GITHUB_REPOSITORY_NAME}/contents/${process.env.POST_PATH}`;
 const GITHUB_API_TOKEN = process.env.GITHUB_API_TOKEN;
@@ -33,7 +31,15 @@ export const fetchPostAndCompileMdx = async (
   post: string,
   lang: LangType,
   tagsCount?: Record<string, number> | null
-): Promise<{ content: any; path: string; compiledMdx: any; data: any; lang: LangType; readingTime: string } | null> => {
+): Promise<{
+  content: any;
+  path: string;
+  compiledMdx: any;
+  data: any;
+  lang: LangType;
+  readingTime: string;
+  toc: iToc[];
+} | null> => {
   const cacheName = `${series}_${post}_${lang}`;
 
   if (cache.has(cacheName)) {
@@ -54,9 +60,10 @@ export const fetchPostAndCompileMdx = async (
     },
   });
 
-  const encodedMdx: iPost = await data.json();
+  const encodedMdx = await data.json();
   const mdx = Buffer.from(encodedMdx.content, "base64").toString("utf-8");
   const content = matter(mdx);
+  const toc = extractToc(content.content);
 
   if (!content.data.visible && tagsCount) {
     tagsCount["all"] -= 1;
@@ -64,15 +71,13 @@ export const fetchPostAndCompileMdx = async (
     return null;
   }
 
-  const compiledMdx = await unified()
-    .use(remarkToc, { maxDepth: 3, heading: process.env.TOC_HEADING || "Contents" })
-    .use(remarkParse)
-    .use(remarkRehype)
-    .use(rehypeSanitize)
-    .use(rehypePrettyCode, { theme: "github-dark" })
-    .use(rehypeStringify)
-    .use(rehypeSlug)
-    .process(content.content);
+  const compiledMdx = await serialize(content.content, {
+    mdxOptions: {
+      remarkPlugins: [remarkParse],
+      rehypePlugins: [rehypeSlug, [rehypePrettyCode, { theme: "github-dark", highlightLines: true }]],
+      format: "mdx",
+    },
+  });
 
   const { text } = readingTime(content.content);
 
@@ -84,16 +89,18 @@ export const fetchPostAndCompileMdx = async (
     ...(({ orig, ...rest }) => rest)(content),
     lang,
     path: `${series}/${post}`,
-    compiledMdx: String(compiledMdx),
+    compiledMdx: compiledMdx,
     readingTime: text,
+    toc: toc,
   });
 
   return {
     ...(({ orig, ...rest }) => rest)(content),
     lang,
     path: `${series}/${post}`,
-    compiledMdx: String(compiledMdx),
+    compiledMdx: compiledMdx,
     readingTime: text,
+    toc: toc,
   };
 };
 
@@ -132,8 +139,9 @@ const fetchPosts = async (lang: LangType, series: string, tagsCount: Record<stri
         path: `${series}/${path}`,
         data: postData.data,
         lang,
-        compiledMdx: String(postData.compiledMdx),
+        compiledMdx: postData.compiledMdx,
         readingTime: postData.readingTime,
+        toc: postData.toc,
       };
     });
 

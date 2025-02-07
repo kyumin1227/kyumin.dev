@@ -6,6 +6,7 @@ import LanguageSwitch from "./LanguageSwitch";
 import MotionGitHubIcon from "./MotionGitHub";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { LangType } from "@/types/posts";
 
 const Header = () => {
   const theme = useTheme();

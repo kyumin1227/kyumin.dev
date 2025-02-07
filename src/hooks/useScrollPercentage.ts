@@ -19,7 +19,6 @@ const useScrollPercentage = (ref: React.RefObject<HTMLElement>) => {
 
       const scrollPercentage = maxScroll > 0 ? (modalElement.scrollTop / maxScroll) * 100 : 0; // 스크롤 비율 계산
       setScrollPercentage(scrollPercentage);
-      console.log(`스크롤 비율: ${scrollPercentage}%`);
     };
 
     // 초기 높이 및 스크롤 위치 설정

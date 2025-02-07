@@ -24,20 +24,6 @@ const Footer = () => {
           src={theme.palette.mode === "dark" ? "/github-mark/github-mark-white.png" : "/github-mark/github-mark.png"}
         />
       </Link>
-      {/* Contact 정보 */}
-      <Typography variant="body1" fontWeight="500" display="flex" alignItems="center" gap={1} marginBottom={1}>
-        Contact{" "}
-        <Link
-          href="mailto:kyumin12271227@gmail.com"
-          underline="hover"
-          style={{
-            color: theme.palette.mode === "dark" ? "#fff" : "#000",
-            fontWeight: "bold",
-          }}
-        >
-          kyumin12271227@gmail.com
-        </Link>
-      </Typography>
 
       {/* Copyright 정보 */}
       <Typography variant="body2" fontWeight="500" display="flex" alignItems="center" gap={1} marginBottom={1}>

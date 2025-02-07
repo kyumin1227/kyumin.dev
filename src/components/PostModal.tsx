@@ -7,6 +7,7 @@ import Footer from "./Footer";
 import useScrollPercentage from "@/hooks/useScrollPercentage";
 import useViewportHeight from "@/hooks/useViewportHeight";
 import PostBody from "./PostBody";
+import { iPost } from "@/types/posts";
 
 interface PostModalProps {
   closeModal: () => void;
@@ -79,6 +80,7 @@ function PostModal({ closeModal, postData }: PostModalProps) {
           readingTime={postData.readingTime}
           width={1200}
           scrollTop={10}
+          toc={postData.toc}
         />
         <Footer />
         <div className="modal-overlay" onClick={closeModal}></div>

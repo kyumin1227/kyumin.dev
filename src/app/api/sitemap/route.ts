@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getPostsSepSeries } from "../getPosts";
 import serializePosts from "@/utils/serializedPosts";
+import { LangType } from "@/types/posts";
 
 const getData = async (lang: LangType) => {
   const { posts } = await getPostsSepSeries(lang);

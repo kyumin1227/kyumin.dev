@@ -1,21 +1,25 @@
+import matter from "gray-matter";
+import { MDXRemoteSerializeResult } from "next-mdx-remote";
+
 /**
  * 개별 글 목록
  */
-interface iPost {
-  content: string;
+export interface iPost {
+  content: matter.GrayMatterFile<string>;
   data: iData;
   path: string;
   isEmpty: boolean;
   excerpt: string;
   lang: LangType;
-  compiledMdx: any;
+  compiledMdx: MDXRemoteSerializeResult;
   readingTime: string;
+  toc: iToc[];
 }
 
 /**
  * getPostsSepSeries의 결과 타입
  */
-interface iPostsSepSeries {
+export interface iPostsSepSeries {
   series: string;
   posts: iPost[];
 }
@@ -23,7 +27,7 @@ interface iPostsSepSeries {
 /**
  * 개별 글 목록의 메타 데이터
  */
-interface iData {
+export interface iData {
   title: string;
   description: string;
   date: string;
@@ -32,9 +36,15 @@ interface iData {
   visible: boolean;
 }
 
-interface iPostsSepSeriesAndTags {
+export interface iPostsSepSeriesAndTags {
   posts: iPostsSepSeries[];
   tags: Record<string, number>;
 }
 
-type LangType = "ko" | "ja";
+export interface iToc {
+  text: string;
+  link: string;
+  indent: number;
+}
+
+export type LangType = "ko" | "ja";
