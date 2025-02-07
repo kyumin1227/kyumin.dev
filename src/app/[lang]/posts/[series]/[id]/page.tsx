@@ -53,7 +53,7 @@ export default async function PostPage({
   if (!result) {
     return <div>{lang === "ja" ? "記事が存在しません。" : "게시물이 존재하지 않습니다."}</div>;
   }
-  const { data, compiledMdx, readingTime } = result;
+  const { data, compiledMdx, readingTime, toc } = result;
 
-  return <PostBody compiledMdx={compiledMdx} data={data} lang={lang} readingTime={readingTime} />;
+  return <PostBody compiledMdx={compiledMdx} data={data} lang={lang} readingTime={readingTime} toc={toc} />;
 }

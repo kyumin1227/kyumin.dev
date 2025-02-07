@@ -80,6 +80,7 @@ function PostModal({ closeModal, postData }: PostModalProps) {
           readingTime={postData.readingTime}
           width={1200}
           scrollTop={10}
+          toc={postData.toc}
         />
         <Footer />
         <div className="modal-overlay" onClick={closeModal}></div>

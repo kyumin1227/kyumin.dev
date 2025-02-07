@@ -21,6 +21,8 @@ const CardWrapper = styled(motion(Grid2))`
   border-radius: 3%;
   aspect-ratio: 4 / 3.5;
   border: 1px solid;
+  background-color: ${({ theme }) => theme.palette.background.paper};
+  overflow: hidden;
 `;
 
 const ImgWrapper = styled(Grid2)`
@@ -83,7 +85,7 @@ export const Tag = ({ tag }: { tag: string }) => {
 
 const PostCard = ({ data, modalFunc }: PostCardProps) => {
   const tags = data.data.tags;
-  const { text } = readingTime(data.content);
+  const { text } = readingTime(String(data.content));
   const date = new Date(data.data.date);
   const [dateString, setDateString] = useState<string>("");
   const [readingTimeString, setReadingTimeString] = useState<string>("");

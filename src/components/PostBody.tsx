@@ -2,27 +2,24 @@
 
 import { Box, Divider, styled, Typography, useTheme } from "@mui/material";
 import Comments from "./Comments";
-import ReactMarkdown from "react-markdown";
-import rehypeRaw from "rehype-raw";
 import "github-markdown-css";
 import "../styles/github-markdown.css"; // 기존 모듈 수정 필요 (색상 선택을 위한 클래스 추가 및 조건 변경)
-import Toc from "./Toc";
 import useCodeTheme from "@/hooks/useCodeTheme";
-import useExtractToc from "@/hooks/useExtractToc";
 import useActiveSections from "@/hooks/useActiveSections";
 import useCheckWide from "@/hooks/useCheckWide";
 import PostInfo from "./PostInfo";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
-import { iData, LangType } from "@/types/posts";
+import { iData, iToc, LangType } from "@/types/posts";
 import useMDXComponents from "../../mdx-components";
 import dynamic from "next/dynamic";
+import TocSide from "./TocSide";
+import { useEffect, useRef, useState } from "react";
+import TocTop from "./TocTop";
 
 const MDXRemoteClient = dynamic(
   () => import("next-mdx-remote").then((mod) => mod.MDXRemote),
   { ssr: false } // 서버 사이드 렌더링을 비활성화합니다.
 );
-
-const CONTENTS_ID = process.env.TOC_HEADING || "Contents"; // 목차로 이용할 ID
 
 const TocWrapper = styled(Box)``;
 
@@ -58,6 +55,7 @@ const PostBody = ({
   readingTime,
   width = 1150,
   scrollTop = 80,
+  toc,
 }: {
   compiledMdx: MDXRemoteSerializeResult;
   data: iData;
@@ -65,13 +63,21 @@ const PostBody = ({
   readingTime: string;
   width?: number;
   scrollTop?: number;
+  toc: iToc[];
 }) => {
   const theme = useTheme();
   const isWide = useCheckWide(width); // 너비 체크
-  const toc = useExtractToc(compiledMdx, CONTENTS_ID) || undefined; // 목차 추출
-  const activeIds = useActiveSections(".markdown-body h1, .markdown-body h2, .markdown-body h3"); // 현재 보이는 섹션
+  const mdxContainerRef = useRef<HTMLDivElement>(null);
+  const [mdxLoaded, setMdxLoaded] = useState(false);
+  const activeIds = useActiveSections("h1, h2, h3", mdxLoaded, mdxContainerRef); // 현재 보이는 섹션
 
   useCodeTheme(theme.palette.mode);
+
+  useEffect(() => {
+    if (mdxContainerRef.current && mdxContainerRef.current.childElementCount > 0) {
+      setMdxLoaded(true);
+    }
+  }, [mdxContainerRef.current?.childElementCount]);
 
   return (
     <>
@@ -79,7 +85,7 @@ const PostBody = ({
         <ContentBody paddingX={isWide ? "0" : "24px"} height={"auto"} position={"relative"}>
           <PostInfo data={data} lang={lang} readingTime={readingTime} />
           <TocWrapper position={"absolute"} top={300} right={-200} height={"100%"}>
-            {isWide && <Toc content={toc} activeIds={activeIds} />}
+            {isWide && <TocSide toc={toc} activeIds={activeIds} />}
           </TocWrapper>
           <MarkdownBodyStyle
             sx={{ "& h1, & h2, & h3": { scrollMarginTop: `${scrollTop}px` } }}
@@ -92,24 +98,12 @@ const PostBody = ({
                   <Typography variant="h1" fontWeight={"bold"}>
                     목차
                   </Typography>
-
-                  <ReactMarkdown
-                    rehypePlugins={[rehypeRaw]}
-                    components={{
-                      h1: ({ node, ...props }) => {
-                        // CONTENTS_ID는 렌더링하지 않음
-                        if (props.id === CONTENTS_ID.toLowerCase()) {
-                          return null;
-                        }
-                        return <h1 {...props} />;
-                      },
-                    }}
-                  >
-                    {toc}
-                  </ReactMarkdown>
+                  <TocTop toc={toc} />
                 </>
               )}
-              <MDXRemoteClient components={useMDXComponents({})} {...compiledMdx} />
+              <Box ref={mdxContainerRef} marginBottom={"32px"}>
+                <MDXRemoteClient components={useMDXComponents({})} {...compiledMdx} />
+              </Box>
               <Comments />
             </Box>
           </MarkdownBodyStyle>

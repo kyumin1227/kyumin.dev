@@ -1,10 +1,11 @@
+import matter from "gray-matter";
 import { MDXRemoteSerializeResult } from "next-mdx-remote";
 
 /**
  * 개별 글 목록
  */
 export interface iPost {
-  content: string;
+  content: matter.GrayMatterFile<string>;
   data: iData;
   path: string;
   isEmpty: boolean;
@@ -12,6 +13,7 @@ export interface iPost {
   lang: LangType;
   compiledMdx: MDXRemoteSerializeResult;
   readingTime: string;
+  toc: iToc[];
 }
 
 /**
@@ -37,6 +39,12 @@ export interface iData {
 export interface iPostsSepSeriesAndTags {
   posts: iPostsSepSeries[];
   tags: Record<string, number>;
+}
+
+export interface iToc {
+  text: string;
+  link: string;
+  indent: number;
 }
 
 export type LangType = "ko" | "ja";
