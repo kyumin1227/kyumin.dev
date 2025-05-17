@@ -46,6 +46,23 @@ const MarkdownBodyStyle = styled(Box)`
     max-width: 100%;
     height: auto;
   }
+
+  /* 글 */
+  p {
+    margin-bottom: 1.5rem;
+  }
+
+  /* 이미지 및 코드 블럭 */
+  figure {
+    margin: 0;
+    margin-bottom: 1.5rem;
+  }
+
+  /* 이미지 캡션 */
+  figcaption {
+    text-align: center;
+    margin-top: 0.5rem;
+  }
 `;
 
 const PostBody = ({

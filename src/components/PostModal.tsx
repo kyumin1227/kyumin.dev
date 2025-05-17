@@ -65,7 +65,7 @@ function PostModal({ closeModal, postData }: PostModalProps) {
         className="modal"
         ref={wrapperRef}
         sx={{
-          backgroundColor: theme.palette.mode === "dark" ? "#0d1117" : "#ffffff",
+          backgroundColor: theme.palette.mode === "dark" ? "#121212" : "#ffffff",
           maxHeight: `calc(${viewportHeight}px - 6vh)`,
         }}
         position="relative"
