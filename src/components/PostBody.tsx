@@ -90,11 +90,28 @@ const PostBody = ({
 
   useCodeTheme(theme.palette.mode);
 
+  // mdxLoaded가 true가 되면 toc를 위한 IntersectionObserver를 실행
   useEffect(() => {
-    if (mdxContainerRef.current && mdxContainerRef.current.childElementCount > 0) {
-      setMdxLoaded(true);
-    }
-  }, [mdxContainerRef.current?.childElementCount]);
+    let attempts = 0;
+    let timeoutId: NodeJS.Timeout;
+
+    const tryCheck = () => {
+      const headersExist = !!mdxContainerRef.current?.querySelector("h1, h2, h3");
+
+      if (headersExist) {
+        setMdxLoaded(true);
+      } else if (attempts < 10) {
+        attempts++;
+        timeoutId = setTimeout(tryCheck, 100); // 100ms 후 재시도
+      } else {
+        console.warn("❌ mdx not loaded after retries");
+      }
+    };
+
+    tryCheck();
+
+    return () => clearTimeout(timeoutId);
+  }, []);
 
   return (
     <>

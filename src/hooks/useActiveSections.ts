@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 
 /**
  * 현재 보이는 섹션 id 반환 (중복 가능)
- * @param ref
  * @param sectionSelector
+ * @param mdxLoaded - true일 경우 섹션을 추적
+ * @param containerRef
  * @returns
  */
 const useActiveSections = (sectionSelector: string, mdxLoaded: boolean, containerRef: React.RefObject<HTMLElement>) => {
@@ -11,22 +12,11 @@ const useActiveSections = (sectionSelector: string, mdxLoaded: boolean, containe
 
   // 현재 보이는 섹션 추적
   useEffect(() => {
-    if (typeof window === "undefined" || !mdxLoaded || !containerRef.current) return;
-
-    const observerConfig = { childList: true, subtree: true };
-    const mutationCallback: MutationCallback = (mutationsList, observer) => {
-      // 한 번이라도 h1/h2/h3가 있으면 IntersectionObserver를 실행
-      if (containerRef.current?.querySelector(sectionSelector)) {
-        initializeIntersectionObserver();
-        observer.disconnect();
-      }
-    };
-
-    const mutationObserver = new MutationObserver(mutationCallback);
-    mutationObserver.observe(containerRef.current, observerConfig);
+    if (typeof window === "undefined" || !mdxLoaded) return;
 
     const initializeIntersectionObserver = () => {
-      const allSections = Array.from(document.querySelectorAll(sectionSelector));
+      if (!containerRef.current) return;
+      const allSections = Array.from(containerRef.current.querySelectorAll(sectionSelector));
       const activeSet = new Set<string>();
 
       let lastActiveId: string | null = null;
@@ -69,18 +59,20 @@ const useActiveSections = (sectionSelector: string, mdxLoaded: boolean, containe
           }
         },
         {
-          root: null, // 모달 내부를 기준
+          root: null, // 현재 보이는 영역(뷰포트)을 기준으로 감지
           threshold: 0.1,
         }
       );
 
       // 관찰 대상 지정
-      const sections = document.querySelectorAll(sectionSelector);
+      const sections = containerRef.current.querySelectorAll(sectionSelector);
       sections.forEach((section) => observer.observe(section));
 
       return () => observer.disconnect();
     };
-  }, [mdxLoaded]);
+
+    initializeIntersectionObserver();
+  }, [mdxLoaded, containerRef]);
 
   return activeIds;
 };
