@@ -46,6 +46,29 @@ const MarkdownBodyStyle = styled(Box)`
     max-width: 100%;
     height: auto;
   }
+
+  /* 글 */
+  p {
+    margin-bottom: 1.5rem;
+  }
+
+  /* 이미지 및 코드 블럭 */
+  figure {
+    margin: 0;
+    margin-bottom: 1.5rem;
+  }
+
+  /* 이미지 캡션 */
+  figcaption {
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+
+  .MuiAlert-message {
+    p {
+      margin-bottom: 10px;
+    }
+  }
 `;
 
 const PostBody = ({
@@ -73,11 +96,28 @@ const PostBody = ({
 
   useCodeTheme(theme.palette.mode);
 
+  // mdxLoaded가 true가 되면 toc를 위한 IntersectionObserver를 실행
   useEffect(() => {
-    if (mdxContainerRef.current && mdxContainerRef.current.childElementCount > 0) {
-      setMdxLoaded(true);
-    }
-  }, [mdxContainerRef.current?.childElementCount]);
+    let attempts = 0;
+    let timeoutId: NodeJS.Timeout;
+
+    const tryCheck = () => {
+      const headersExist = !!mdxContainerRef.current?.querySelector("h1, h2, h3");
+
+      if (headersExist) {
+        setMdxLoaded(true);
+      } else if (attempts < 10) {
+        attempts++;
+        timeoutId = setTimeout(tryCheck, 100); // 100ms 후 재시도
+      } else {
+        console.warn("❌ mdx not loaded after retries");
+      }
+    };
+
+    tryCheck();
+
+    return () => clearTimeout(timeoutId);
+  }, []);
 
   return (
     <>

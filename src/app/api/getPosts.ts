@@ -7,7 +7,7 @@ import { serialize } from "next-mdx-remote/serialize";
 import { iPost, iToc, LangType } from "@/types/posts";
 import extractToc from "@/utils/extractToc";
 
-const GITHUB_API_URL = `https://api.github.com/repos/${process.env.GITHUB_USER_ID}/${process.env.GITHUB_REPOSITORY_NAME}/contents/${process.env.POST_PATH}`;
+const GITHUB_API_URL = `https://api.github.com/repos/${process.env.NEXT_PUBLIC_GITHUB_USER_ID}/${process.env.NEXT_PUBLIC_GITHUB_REPOSITORY_NAME}/contents/${process.env.POST_PATH}`;
 const GITHUB_API_TOKEN = process.env.GITHUB_API_TOKEN;
 
 const cache = new Map<string, any>(); // 메모리 캐시

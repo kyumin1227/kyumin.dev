@@ -18,10 +18,10 @@ const Comments = () => {
   return (
     <Giscus
       id="comments"
-      repo="kyumin1227/kyumin.dev"
-      repoId="R_kgDONXR2Mw"
-      category="Comments"
-      categoryId="DIC_kwDONXR2M84CmJpR"
+      repo={`${process.env.NEXT_PUBLIC_GITHUB_USER_ID}/${process.env.NEXT_PUBLIC_GITHUB_REPOSITORY_NAME}`}
+      repoId={process.env.NEXT_PUBLIC_GITHUB_REPOSITORY_ID ?? ""}
+      category={process.env.NEXT_PUBLIC_GITHUB_CATEGORY}
+      categoryId={process.env.NEXT_PUBLIC_GITHUB_CATEGORY_ID}
       mapping="specific"
       term={unifiedPath}
       lang={lang}
