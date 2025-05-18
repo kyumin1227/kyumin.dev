@@ -63,6 +63,12 @@ const MarkdownBodyStyle = styled(Box)`
     text-align: center;
     margin-top: 0.5rem;
   }
+
+  .MuiAlert-message {
+    p {
+      margin-bottom: 10px;
+    }
+  }
 `;
 
 const PostBody = ({
