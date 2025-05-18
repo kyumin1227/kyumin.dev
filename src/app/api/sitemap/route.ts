@@ -24,12 +24,12 @@ export async function GET() {
 
   const lang = ["ko", "ja"];
 
-  const posts_ko = await getData("ko");
+  const posts_all = [...(await getData("ko")), ...(await getData("ja"))];
 
   urls.push(
-    ...posts_ko.map((post) => ({
+    ...posts_all.map((post) => ({
       loc: `/posts/${post.path}`,
-      lastmod: `${new Date(post.data.date).toISOString().split("T")[0]}`,
+      lastmod: new Date(post.data.date).toISOString().split("T")[0],
       changefreq: "weekly",
       priority: "0.8",
     }))
