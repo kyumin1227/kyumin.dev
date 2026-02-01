@@ -1,5 +1,6 @@
 import matter from "gray-matter";
 import remarkParse from "remark-parse";
+import remarkGfm from "remark-gfm";
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
 import readingTime from "reading-time";
@@ -30,7 +31,7 @@ export const fetchPostAndCompileMdx = async (
   series: string,
   post: string,
   lang: LangType,
-  tagsCount?: Record<string, number> | null
+  tagsCount?: Record<string, number> | null,
 ): Promise<{
   content: any;
   path: string;
@@ -73,7 +74,7 @@ export const fetchPostAndCompileMdx = async (
 
   const compiledMdx = await serialize(content.content, {
     mdxOptions: {
-      remarkPlugins: [remarkParse],
+      remarkPlugins: [remarkParse, remarkGfm],
       rehypePlugins: [rehypeSlug, [rehypePrettyCode, { theme: "github-dark", highlightLines: true }]],
       format: "mdx",
     },
@@ -183,7 +184,7 @@ export const getPostsSepSeries = async (lang: LangType) => {
       const postDatas = await fetchPosts(lang, series.name, tagsCount);
 
       return postDatas.length > 0 ? { series: series.name, posts: postDatas } : null; // 시리즈명과 글 데이터를 객체로 반환
-    })
+    }),
   );
 
   const filterPosts = posts.filter((post) => post !== null);
